@@ -1,0 +1,14 @@
+{
+  "name": "404",
+  "description": "Rotate, flip and slide icons to create symmetries. How fast can you do it?",
+  "images" : {
+    "image_large": "images/large.jpg",
+    "image_thumbnail": "images/small.jpg"
+  },
+  "categories": ["Desktop"],
+  "user" : {
+    "name": "sirxemic",
+    "website": "https://sirxemic.com/",
+    "twitter": "sirxemic"
+  }
+}
