@@ -60,6 +60,7 @@ const minifyShaders = {
       const s = JSON.parse(shaderCode)
       return JSON.stringify(
         s.substr(8)
+          .replace(/^\s+|\s+$/, '')
           .replace(/\b0(\.\d+)\b/g, (g0, g1) => g1)
           .replace(/\b(\d+\.)0\b/g, (g0, g1) => g1)
           .replace(/\s+/g, ' ')
@@ -71,7 +72,7 @@ const minifyShaders = {
 const transformGlConsts = {
   transformBundle (code) {
     for (let [key, value] of Object.entries(webglConstants)) {
-      code = code.replace(new RegExp(`([^a-zA-Z.])(gl\\.${key}\\b)`), (g0, g1) => g1 + value)
+      code = code.replace(new RegExp(`([^a-zA-Z.])gl\\.${key}\\b`, 'g'), (g0, g1) => g1 + value)
     }
     return code
   }
@@ -82,7 +83,7 @@ const transformGlConsts = {
 const preMangle = {
   transformBundle (code) {
     // TODO
-    return code
+    return code.replace(/orientation/g, 'mOrientation')
   }
 }
 
@@ -123,7 +124,7 @@ function advZip () {
 
 async function build() {
   const bundle = await rollup.rollup(inputOptions)
-  const { code } = await bundle.generate(outputOptions)
+  let { code } = await bundle.generate(outputOptions)
 
   let minifiedHtml = minifyHtml(
     fs.readFileSync('index.html', { encoding: 'utf-8' }),
@@ -133,6 +134,9 @@ async function build() {
       removeAttributeQuotes: true
     }
   )
+
+  // Strip "use strict"
+  code = code.substring("'use strict';".length)
 
   let newScriptTag = `<script>${code}</script>`
   minifiedHtml = minifiedHtml.replace(/<script[^>]+><\/script>/, m => newScriptTag)

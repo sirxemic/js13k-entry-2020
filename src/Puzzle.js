@@ -13,6 +13,7 @@ import { gl } from './Graphics'
 import { Matrix4 } from './Math/Matrix4'
 import { Input } from './Input'
 import { FlipHAction } from './Actions/FlipHAction'
+import { tempMatrix4 } from './temps'
 
 const scaleMatrix = new Matrix4([
   1.1, 0, 0, 0,
@@ -45,7 +46,7 @@ class Tile extends Transform3D {
     TheShapeShader.use({
       [U_PROJECTIONMATRIX]: TheCamera.projectionMatrix,
       [U_VIEWMATRIX]: TheCamera.viewMatrix,
-      [U_MODELMATRIX]: (new Matrix4()).multiply(this.worldMatrix, scaleMatrix),
+      [U_MODELMATRIX]: tempMatrix4.multiply(this.worldMatrix, scaleMatrix),
       [U_COLOR]: 0
     })
     this.shape.draw()
@@ -62,6 +63,8 @@ export class Puzzle extends Transform3D {
   constructor () {
     super()
     this.t = 0
+
+    this.bufferedClick = false
 
     const root = new Transform3D()
     root.matrix.setTranslation(0, 0, -50)
@@ -101,11 +104,12 @@ export class Puzzle extends Transform3D {
     this.matrix = TheRollercoaster.getTransformAt(TheCamera.t + this.t)
 
     document.body.style.cursor = ''
-    if (!this.executionCoroutine) {
-      this.checkInput()
-    } else if (this.executionCoroutine.next(delta).done) {
+
+    if (this.executionCoroutine && this.executionCoroutine.next(delta).done) {
       this.executionCoroutine = null
     }
+
+    this.checkInput()
 
     this.updateMatrices()
   }
@@ -124,8 +128,13 @@ export class Puzzle extends Transform3D {
       hoverAction.hover = true
       document.body.style.cursor = 'pointer'
 
-      if (Input.mousePress) {
-        this.executionCoroutine = hoverAction.execute()
+      if (Input.mousePress || this.bufferedClick) {
+        if (this.executionCoroutine) {
+          this.bufferedClick = true
+        } else {
+          this.bufferedClick = false
+          this.executionCoroutine = hoverAction.execute()
+        }
       }
     }
   }

@@ -1,10 +1,10 @@
 import { SimpleAction } from './SimpleAction'
-import { Matrix4 } from '../Math/Matrix4'
 import { RotateGeometry } from '../Geometries/RotateGeometry'
 import { ACTION_DURATION, TILE_SIZE } from '../constants'
 import { elastic } from '../utils'
+import { tempMatrix4 } from '../temps'
 
-const rotationMatrix = new Matrix4()
+const rotationMatrix = tempMatrix4
 
 export class RotateAction extends SimpleAction {
   constructor (puzzle, position, direction = 1) {

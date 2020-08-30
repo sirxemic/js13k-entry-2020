@@ -1,10 +1,10 @@
 import { SimpleAction } from './SimpleAction'
 import { TILE_SIZE, ACTION_DURATION } from '../constants'
 import { TheFlipHGeometry } from '../Geometries/FlipHGeometry'
-import { Matrix4 } from '../Math/Matrix4'
 import { elastic } from '../utils'
+import { tempMatrix4 } from '../temps'
 
-const rotationMatrix = new Matrix4()
+const rotationMatrix = tempMatrix4
 
 export class FlipHAction extends SimpleAction {
   constructor (puzzle, position) {

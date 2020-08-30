@@ -2,6 +2,7 @@ import { Matrix4 } from './Math/Matrix4'
 import { Matrix3 } from './Math/Matrix3'
 import { TheCamera } from './Camera'
 import { U_PROJECTIONMATRIX, U_VIEWMATRIX, U_MODELMATRIX, U_CAMERAPOSITION, U_NORMALMATRIX } from './sharedLiterals'
+import { tempMatrix4 } from './temps'
 
 export class Transform3D {
   constructor () {
@@ -27,7 +28,7 @@ export class Transform3D {
 
   getCommonUniforms () {
     const normalMatrix = new Matrix3()
-    normalMatrix.getNormalMatrix(new Matrix4().multiply(TheCamera.viewMatrix, this.worldMatrix))
+    normalMatrix.getNormalMatrix(tempMatrix4.multiply(TheCamera.viewMatrix, this.worldMatrix))
 
     return {
       [U_PROJECTIONMATRIX]: TheCamera.projectionMatrix,
