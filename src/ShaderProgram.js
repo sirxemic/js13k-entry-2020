@@ -2,6 +2,8 @@ import { gl } from './Graphics'
 import { Vector3 } from './Math/Vector3'
 import { Matrix3 } from './Math/Matrix3'
 import { Matrix4 } from './Math/Matrix4'
+import { TheCamera } from './Camera'
+import { U_PROJECTIONMATRIX, U_VIEWMATRIX, U_CAMERAPOSITION } from './sharedLiterals'
 
 function createShader (type, source) {
   var shader = gl.createShader(type)
@@ -34,9 +36,13 @@ export class ShaderProgram {
     }
   }
 
-  use (uniforms) {
+  use (uniforms = {}) {
+    uniforms[U_PROJECTIONMATRIX] = TheCamera.projectionMatrix
+    uniforms[U_VIEWMATRIX] = TheCamera.viewMatrix
+    uniforms[U_CAMERAPOSITION] = TheCamera.position
+
     gl.useProgram(this.program)
-    for (let uniformName in uniforms) {
+    for (let uniformName in this.uniformLocations) {
       const location = this.uniformLocations[uniformName]
       if (uniforms[uniformName] instanceof Vector3) {
         gl.uniform3fv(location, uniforms[uniformName].array())

@@ -1,8 +1,8 @@
 import { TheCanvas } from './Graphics'
 
 export let Input = {
-  x: 0,
-  y: 0,
+  x: -1000,
+  y: -1000,
   scale: 1,
   mousePress: 0,
   mouseRelease: 0,

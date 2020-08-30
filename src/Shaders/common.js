@@ -24,12 +24,48 @@ float noise(vec3 p){
   return o4.y * d.y + o4.x * (1.0 - d.y);
 }
 
-vec4 sampleBackdrop(vec3 dir) {
-  float e = 0.5 * noise(dir * 3.0);
+vec2 rotate(vec2 uv, float a) {
+  float c = cos(a);
+  float s = sin(a);
+  return vec2(c * uv.x - s * uv.y, s * uv.x + c * uv.y);
+}
+
+float fbm(vec2 p, float t) {
+  float f;
+  f  = 0.5    * noise(vec3(p, t)); p *= 2.1;
+  f += 0.25   * noise(vec3(p, t)); p *= 2.2;
+  f += 0.125  * noise(vec3(p, t)); p *= 2.3;
+  f += 0.0625 * noise(vec3(p, t));
+  return f;
+}
+
+/* Star code origin: https://www.shadertoy.com/view/llj3zV */
+vec3 stars(vec3 dir) {
+  vec3 n = abs(dir);
+  vec2 uv = (n.x > n.y && n.x > n.z) ? dir.yz / dir.x :
+            (n.y > n.x && n.y > n.z) ? dir.zx / dir.y :
+                                        dir.xy / dir.z;
+
+  float f = 0.0;
+
+  for (int i = 0 ; i < 3; i++) {
+    uv = rotate( 1.07 * uv + vec2( 0.7 ), 0.5 );
+
+    float t = 10. * uv.x * uv.y;
+    vec2 u = cos(100. * uv) * fbm(20. * uv, 0.0);
+    f += smoothstep(0.5, 0.55, u.x * u.y) * (0.25 * sin(t) + 0.75);
+  }
+
+  return f * vec3(1.0, 0.7, 0.5);
+}
+
+vec3 bg(vec3 dir) {
+  vec3 o1 = vec3(10.0, -5.0, 1.0);
+  vec3 o2 = vec3(2.0, 3.0, 1.0);
   vec3 col = vec3(
-    noise(dir) + 0.7 * noise(2.0 * dir) + e,
-    noise(dir + vec3(10.0, -5.0, 1.0)) + 0.8 * noise(2.0 * dir - vec3(2.0, 3.0, 1.0)),
-    noise(dir - vec3(2.0, 3.0, 1.0)) + 0.7 * noise(2.0 * dir + vec3(10.0, -5.0, 1.0)) + e
-  );
-  return vec4(0.25 * col * col, 1.0);
+    noise(dir) + noise(dir * 3.0),
+    noise(dir + o1) + noise(dir * 3.0 + o1),
+    noise(dir - o2) + noise(dir * 3.0 - o2)
+  ) + stars(dir);
+  return 0.25 * col * col;
 }`

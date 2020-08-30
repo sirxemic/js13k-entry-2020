@@ -30,6 +30,7 @@ function makeRotateGeometry (tileSpan) {
 
   for (let i = 0; i < vertices.length; i += 3) {
     vertices[i + 1] += TILE_SIZE
+    vertices[i + 2] -= 1
   }
 
   return new Geometry({ vertices, normals, indices })

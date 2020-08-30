@@ -4,13 +4,13 @@ import { TRACK_WIDTH } from '../constants'
 import { TheRollercoaster } from '../Rollercoaster'
 
 const HALF_WIDTH = TRACK_WIDTH / 2
-const DEPTH = TRACK_WIDTH / 9
+const DEPTH = TRACK_WIDTH / 7
 const HALF_INNER_WIDTH = TRACK_WIDTH / 4
 
 const vertices = []
 const normals = []
 const indices = []
-const N = 500
+const N = 900
 let offset = 0
 for (let i = 0; i <= N; i++) {
   const t = i / N * Math.PI * 2
@@ -22,7 +22,7 @@ for (let i = 0; i <= N; i++) {
 
   const n1 = new Vector3(p1.y - p2.y, p2.x - p1.x, 0)
   const n2 = new Vector3(0, 1, 0)
-  const n3 =  new Vector3(p4.y - p3.y, p3.x - p4.x, 0)
+  const n3 = new Vector3(p3.y - p4.y, p4.x - p3.x, 0)
 
   p1.applyMatrix4(transform)
   p2.applyMatrix4(transform)

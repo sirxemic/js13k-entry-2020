@@ -4,7 +4,6 @@ export const ATTR_UV = 'c'
 
 export const U_MODELMATRIX = 'd'
 export const U_VIEWMATRIX = 'e'
-export const U_MODELVIEWMATRIX = 'f'
 export const U_PROJECTIONMATRIX = 'g'
 export const U_NORMALMATRIX = 'h'
 export const U_CAMERAPOSITION = 'i'

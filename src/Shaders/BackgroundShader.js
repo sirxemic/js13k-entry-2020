@@ -2,8 +2,7 @@ import {
   U_VIEWMATRIX,
   U_PROJECTIONMATRIX,
   U_CAMERAPOSITION,
-  ATTR_POSITION,
-  ATTR_NORMAL
+  ATTR_POSITION
 } from '../sharedLiterals'
 import { ShaderProgram } from '../ShaderProgram'
 import { common } from './common'
@@ -13,16 +12,16 @@ uniform mat4 ${U_VIEWMATRIX};
 uniform mat4 ${U_PROJECTIONMATRIX};
 
 attribute vec3 ${ATTR_POSITION};
-attribute vec3 ${ATTR_NORMAL};
 
 varying vec3 vp;
-varying vec3 vn;
 
 void main() {
   vp = ${ATTR_POSITION};
-  vn = ${ATTR_NORMAL};
 
-  gl_Position = ${U_PROJECTIONMATRIX} * ${U_VIEWMATRIX} * vec4(${ATTR_POSITION}, 1.0);
+  mat4 r = ${U_VIEWMATRIX};
+  r[3].xyz = vec3(0.0);
+
+  gl_Position = ${U_PROJECTIONMATRIX} * r * vec4(${ATTR_POSITION}, 1.0);
 }
 `
 
@@ -32,18 +31,14 @@ precision mediump float;
 uniform vec3 ${U_CAMERAPOSITION};
 
 varying vec3 vp;
-varying vec3 vn;
 
 ${common}
 
 void main() {
-  vec3 normal = normalize(vn);
-  vec3 ray = normalize(vp - ${U_CAMERAPOSITION});
-  ray = reflect(ray, normal);
+  vec3 r = normalize(vp);
 
-  vec3 color = bg(ray);
-  gl_FragColor = vec4(color * color, 1.0);
+  gl_FragColor = vec4(bg(r), 1.0);
 }
 `
 
-export const TheRollercoasterShader = new ShaderProgram(vertexShader, fragmentShader)
+export const BackgroundShader = new ShaderProgram(vertexShader, fragmentShader)

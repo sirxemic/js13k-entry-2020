@@ -1,6 +1,6 @@
 import { TheRollercoaster } from './Rollercoaster'
 import { TheShapeShader } from './Shaders/ShapeShader'
-import { U_PROJECTIONMATRIX, U_VIEWMATRIX, U_MODELMATRIX, U_COLOR } from './sharedLiterals'
+import { U_MODELMATRIX, U_COLOR } from './sharedLiterals'
 import { TheCamera } from './Camera'
 import { Transform3D } from './Transform3D'
 import { FourShape, CircleShape, TriangleShape } from './Geometries/Shapes'
@@ -44,8 +44,6 @@ class Tile extends Transform3D {
   render () {
     gl.disable(gl.DEPTH_TEST)
     TheShapeShader.use({
-      [U_PROJECTIONMATRIX]: TheCamera.projectionMatrix,
-      [U_VIEWMATRIX]: TheCamera.viewMatrix,
       [U_MODELMATRIX]: tempMatrix4.multiply(this.worldMatrix, scaleMatrix),
       [U_COLOR]: 0
     })

@@ -1,11 +1,11 @@
 import { Puzzle } from './Puzzle'
+import { BackgroundShader } from './Shaders/BackgroundShader'
 import { TheRollercoasterShader } from './Shaders/RollercoasterShader'
 import { TheRollercoasterGeometry } from './Geometries/RollercoasterGeometry'
-import { U_CAMERAPOSITION, U_PROJECTIONMATRIX, U_MODELVIEWMATRIX, U_NORMALMATRIX } from './sharedLiterals'
-import { Matrix3 } from './Math/Matrix3'
 import { TheCamera } from './Camera'
 import { gl, TheCanvas } from './Graphics'
 import { Input } from './Input'
+import { BackgroundGeometry } from './Geometries/BackgroundGeometry'
 
 const puzzle = new Puzzle()
 
@@ -27,15 +27,12 @@ function tick (time) {
   gl.viewport(0, 0, TheCanvas.width, TheCanvas.height)
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
-  const normalMatrix = new Matrix3()
-  normalMatrix.getNormalMatrix(TheCamera.viewMatrix)
+  BackgroundShader.use()
+  BackgroundGeometry.draw()
 
-  TheRollercoasterShader.use({
-    [U_CAMERAPOSITION]: TheCamera.position,
-    [U_PROJECTIONMATRIX]: TheCamera.projectionMatrix,
-    [U_MODELVIEWMATRIX]: TheCamera.viewMatrix,
-    [U_NORMALMATRIX]: normalMatrix
-  })
+  gl.clear(gl.DEPTH_BUFFER_BIT)
+
+  TheRollercoasterShader.use()
   TheRollercoasterGeometry.draw()
 
   puzzle.render()
