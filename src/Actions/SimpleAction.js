@@ -7,12 +7,12 @@ export class SimpleAction extends Action {
     super(puzzle)
     this.geometry = geometry
     this.position = position
-    this.matrix.setTranslation(position * TILE_SIZE * 2, 0, 0)
+    this.matrix.setTranslation(position * TILE_SIZE, 0, 0)
 
-    this.minX = (position - 0.5) * TILE_SIZE * 2
-    this.maxX = (position + 0.5) * TILE_SIZE * 2
-    this.minY = -0.75 * TILE_SIZE
-    this.maxY = 0.75 * TILE_SIZE
+    this.minX = (position - 0.5) * TILE_SIZE
+    this.maxX = (position + 0.5) * TILE_SIZE
+    this.minY = -0.4 * TILE_SIZE
+    this.maxY = 0.4 * TILE_SIZE
   }
 
   render () {

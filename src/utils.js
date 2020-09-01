@@ -108,6 +108,10 @@ export function elastic (t, a = 1, p = 0.5) {
   return 2 ** (-10 * t) * Math.sin((t - 0.125) * 4 * Math.PI) + 1
 }
 
+export function smoothstep(x) {
+  return x * x * (3 - 2 * x)
+}
+
 /**
  * Waiting for the next frame is useful for preventing the browser to hang
  * while the assets are being generated

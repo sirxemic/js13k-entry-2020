@@ -3,8 +3,7 @@ import { Vector3 } from './Math/Vector3'
 import { TheRollercoaster } from './Rollercoaster'
 import { TheCanvas } from './Graphics'
 import { Input } from './Input'
-
-const fovx = 1.5
+import { DISTANCE_FROM_CAMERA, FOVX } from './constants'
 
 class Camera {
   constructor () {
@@ -21,9 +20,9 @@ class Camera {
 
     this.viewMatrix.getInverse(transform)
 
-    this.projectionMatrix.fromPerspective(fovx, TheCanvas.width / TheCanvas.height, 5, 10000)
+    this.projectionMatrix.fromPerspective(FOVX, TheCanvas.width / TheCanvas.height, 5, 10000)
 
-    Input.scale = 2 * 50 * Math.tan(fovx / 2) / TheCanvas.width
+    Input.scale = 2 * DISTANCE_FROM_CAMERA * Math.tan(FOVX / 2) / TheCanvas.width
   }
 }
 

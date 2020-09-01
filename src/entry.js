@@ -6,6 +6,16 @@ import { TheCamera } from './Camera'
 import { gl, TheCanvas } from './Graphics'
 import { Input } from './Input'
 import { BackgroundGeometry } from './Geometries/BackgroundGeometry'
+import { warpRenderTarget } from './RenderTarget'
+
+function resizeCanvas () {
+  TheCanvas.width = window.innerWidth
+  TheCanvas.height = window.innerHeight
+  warpRenderTarget.resize(TheCanvas.width, TheCanvas.height)
+}
+
+resizeCanvas()
+window.onresize = resizeCanvas
 
 const STATE_INTRO = 0
 const STATE_PLAYING = 1
@@ -29,6 +39,7 @@ function tick (time) {
   }
 
   TheCamera.step(delta)
+
 
   switch (state) {
     case STATE_INTRO:

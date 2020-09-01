@@ -1,5 +1,5 @@
 import { Action } from '../Action'
-import { TILE_SIZE, ACTION_DURATION } from '../constants'
+import { TILE_SIZE, SHAPE_SIZE, ACTION_DURATION } from '../constants'
 import { TheActionShader } from '../Shaders/ActionShader'
 import { SwapGeometries } from '../Geometries/SwapGeometry'
 import { elastic } from '../utils'
@@ -15,18 +15,18 @@ export class SwapAction extends Action {
       this.matrix.rotateZ(Math.PI)
     }
 
-    this.minX = (this.position1 - 0.25) * TILE_SIZE * 2
-    this.maxX = (this.position2 + 0.25) * TILE_SIZE * 2
+    this.minX = (this.position1 - 0.25) * TILE_SIZE
+    this.maxX = (this.position2 + 0.25) * TILE_SIZE
     if (rotate180) {
-      this.maxY = -TILE_SIZE
-      this.minY = -TILE_SIZE - (span - 1) * TILE_SIZE
+      this.maxY = -SHAPE_SIZE
+      this.minY = -SHAPE_SIZE - (span - 1) * SHAPE_SIZE
     } else {
-      this.minY = TILE_SIZE
-      this.maxY = TILE_SIZE + (span - 1) * TILE_SIZE
+      this.minY = SHAPE_SIZE
+      this.maxY = SHAPE_SIZE + (span - 1) * SHAPE_SIZE
     }
 
-    this.mid = (position1 + position2) * TILE_SIZE
-    this.span = (position2 - position1) * TILE_SIZE
+    this.mid = (position1 + position2) * TILE_SIZE / 2
+    this.span = (position2 - position1) * TILE_SIZE / 2
     this.matrix.setTranslation(this.mid, 0, 0)
   }
 

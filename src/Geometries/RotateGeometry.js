@@ -1,14 +1,14 @@
 import { Geometry } from '../Geometry'
 import { create2DArrow } from './ArrowBuilder'
-import { TILE_SIZE } from '../constants'
+import { SHAPE_SIZE } from '../constants'
 
 const vertices = []
 const normals = []
 const indices = []
 
-const HALF_TAIL_WIDTH = TILE_SIZE / 6
-const HALF_HEAD_WIDTH = TILE_SIZE / 2
-const RADIUS = TILE_SIZE * 0.75
+const HALF_TAIL_WIDTH = SHAPE_SIZE / 6
+const HALF_HEAD_WIDTH = SHAPE_SIZE / 2
+const RADIUS = SHAPE_SIZE * 0.75
 const ANGLE_START = -4
 const ANGLE_END = -1
 

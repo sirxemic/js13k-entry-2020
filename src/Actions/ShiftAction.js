@@ -10,23 +10,24 @@ export class ShiftAction extends Action {
     this.position = position
     this.direction = Math.sign(position)
     this.matrix.els[0] = this.direction
-    this.matrix.setTranslation(position * TILE_SIZE * 2, 0, 0)
+    this.matrix.setTranslation(position * TILE_SIZE, 0, 0)
 
-    this.minX = (position - 0.5) * TILE_SIZE * 2
-    this.maxX = (position + 0.5) * TILE_SIZE * 2
-    this.minY = -0.75 * TILE_SIZE
-    this.maxY = 0.75 * TILE_SIZE
+    this.minX = (position - 0.5) * TILE_SIZE
+    this.maxX = (position + 0.5) * TILE_SIZE
+    this.minY = -0.4 * TILE_SIZE
+    this.maxY = 0.4 * TILE_SIZE
   }
 
   *execute (animate = true) {
     if (animate) {
       let t = 0
       while (t < ACTION_DURATION) {
-        const offset = elastic(t / ACTION_DURATION) * 2 * TILE_SIZE * this.direction
+        const x = t / ACTION_DURATION
+        const offset = elastic(x) * TILE_SIZE * this.direction
         for (let tile of this.puzzle.tiles) {
-          tile.matrix.els[12] = tile.position * TILE_SIZE * 2 + offset
-          if (tile.position === this.position - this.direction && t > ACTION_DURATION / 2) {
-            tile.matrix.els[12] = -this.position * TILE_SIZE * 2 + offset
+          tile.matrix.els[12] = tile.position * TILE_SIZE + offset
+          if (tile.position === this.position - this.direction) {
+            tile.matrix.els[12] += TILE_SIZE * this.direction * Math.min(1, 2 * x)
           }
         }
         t += yield

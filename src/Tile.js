@@ -39,16 +39,15 @@ export class Tile extends Transform3D {
       this.orientation[0], this.orientation[1], 0, 0,
       this.orientation[2], this.orientation[3], 0, 0,
       0, 0, 1, 0,
-      this.position * TILE_SIZE * 2, 0, 0, 1
+      this.position * TILE_SIZE, 0, 0, 1
     ])
   }
 
   render () {
     this.effectMix += (this.active - this.effectMix) * 0.2
-    gl.disable(gl.DEPTH_TEST)
     TheShapeShader.use({
       [U_MODELMATRIX]: this.worldMatrix,
-      [U_COLOR]: +this.active,
+      [U_COLOR]: this.effectMix,
       [U_ACTIVE]: 0,
       [U_TIME]: performance.now() / 1000
     })
@@ -60,6 +59,5 @@ export class Tile extends Transform3D {
       [U_TIME]: performance.now() / 1000
     })
     this.shape.draw()
-    gl.enable(gl.DEPTH_TEST)
   }
 }

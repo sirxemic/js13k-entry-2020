@@ -23,7 +23,7 @@ class RotateAction extends SimpleAction {
       while (t < ACTION_DURATION) {
         rotationMatrix.rotateZ(direction * elastic(t / ACTION_DURATION) * Math.PI / 2)
         tile.matrix.multiply(rotationMatrix, rotationMatrixFrom)
-        tile.matrix.setTranslation(tile.position * TILE_SIZE * 2, 0, 0)
+        tile.matrix.setTranslation(tile.position * TILE_SIZE, 0, 0)
         t += yield
       }
     }

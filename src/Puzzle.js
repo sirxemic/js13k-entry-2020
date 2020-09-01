@@ -10,6 +10,11 @@ import { ShiftAction } from './Actions/ShiftAction'
 import { gl } from './Graphics'
 import { Input } from './Input'
 import { Tile } from './Tile'
+import { warpRenderTarget, RenderTarget } from './RenderTarget'
+import { PuzzleShader } from './Shaders/PuzzleShader'
+import { Quad } from './Geometries/Quad'
+import { U_TEXTURE, U_WRAP_START, U_WRAP_LENGTH } from './sharedLiterals'
+import { SHAPE_SIZE, DISTANCE_FROM_CAMERA, FOVX } from './constants'
 
 const simpleActions = [FlipHAction, FlipVAction, RotateCWAction, RotateCCWAction]
 
@@ -22,7 +27,7 @@ export class Puzzle extends Transform3D {
     this.bufferedClick = false
 
     this.root = new Transform3D()
-    this.root.matrix.setTranslation(0, 0, -50)
+    this.root.matrix.setTranslation(0, 0, -DISTANCE_FROM_CAMERA)
 
     this.add(this.root)
 
@@ -46,6 +51,8 @@ export class Puzzle extends Transform3D {
   }
 
   createTiles (amount) {
+    this.size = amount
+
     function chooseShape () {
       const r = Math.random()
       if (r < 0.5) return FourShape
@@ -86,6 +93,7 @@ export class Puzzle extends Transform3D {
     this.actions = []
 
     const validPositions = this.tiles.map(tile => tile.position).filter(x => x)
+    const shiftPosition = Math.abs(validPositions[0] - 1)
 
     const maxSimpleActionCount = validPositions.length
     const simpleActionCount = Math.min(maxSimpleActionCount, Math.max(1, Math.ceil(difficulty / 2)))
@@ -97,6 +105,9 @@ export class Puzzle extends Transform3D {
       this.actions.push(new Action(this, position))
       validPositions.splice(index, 1)
     }
+
+    this.actions.push(new ShiftAction(this, -shiftPosition))
+    this.actions.push(new ShiftAction(this, shiftPosition))
 
     this.actions.forEach(action => {
       this.root.add(action)
@@ -165,8 +176,27 @@ export class Puzzle extends Transform3D {
       action.render()
     }
     gl.disable(gl.BLEND)
+
+    warpRenderTarget.bind()
+    gl.clear(gl.COLOR_BUFFER_BIT)
+    gl.disable(gl.DEPTH_TEST)
     for (let tile of this.tiles) {
       tile.render()
     }
+    gl.enable(gl.DEPTH_TEST)
+    warpRenderTarget.unbind()
+
+    const visiblePuzzleWidth = 2 * Math.tan(FOVX / 2) * DISTANCE_FROM_CAMERA
+    const normalizedTileWidth = 2 * SHAPE_SIZE / visiblePuzzleWidth
+
+    gl.enable(gl.BLEND)
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
+    PuzzleShader.use({
+      [U_TEXTURE]: 0,
+      [U_WRAP_START]: 0.5 + (this.size + 0.5) * normalizedTileWidth,
+      [U_WRAP_LENGTH]: normalizedTileWidth
+    })
+    Quad.draw()
+    gl.disable(gl.BLEND)
   }
 }

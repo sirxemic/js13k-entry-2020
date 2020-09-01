@@ -60,10 +60,11 @@ const minifyShaders = {
       const s = JSON.parse(shaderCode)
       return JSON.stringify(
         s.substr(8)
+          .replace(/\s+/g, ' ')
           .replace(/^\s+|\s+$/g, '')
+          .replace(/\/\*.+?\*\//g, '')
           .replace(/\b0(\.\d+)\b/g, (g0, g1) => g1)
           .replace(/\b(\d+\.)0\b/g, (g0, g1) => g1)
-          .replace(/\s+/g, ' ')
           .replace(/(\W) /g, (g0, g1) => g1)
           .replace(/ (\W)/g, (g0, g1) => g1)
       )
@@ -85,7 +86,9 @@ const transformGlConsts = {
 const preMangle = {
   transformBundle (code) {
     // TODO
-    return code.replace(/orientation/g, 'mOrientation')
+    return code
+      .replace(/orientation/g, 'mOrientation')
+      .replace(/\["(\w+)"\]:/g, (g0, g1) => g1 + ':')
   }
 }
 

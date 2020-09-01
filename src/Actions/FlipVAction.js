@@ -20,7 +20,7 @@ export class FlipVAction extends SimpleAction {
       while (t < ACTION_DURATION) {
         rotationMatrix.rotateX(elastic(t / ACTION_DURATION) * Math.PI)
         tile.matrix.multiply(rotationMatrix, rotationMatrixFrom)
-        tile.matrix.setTranslation(tile.position * TILE_SIZE * 2, 0, 0)
+        tile.matrix.setTranslation(tile.position * TILE_SIZE, 0, 0)
         t += yield
       }
     }

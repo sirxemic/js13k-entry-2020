@@ -1,6 +1,6 @@
 import { Geometry } from '../Geometry'
 import { create2DArrow } from './ArrowBuilder'
-import { TILE_SIZE } from '../constants'
+import { SHAPE_SIZE } from '../constants'
 
 function makeRotateGeometry (tileSpan) {
   const vertices = []
@@ -11,11 +11,11 @@ function makeRotateGeometry (tileSpan) {
     tileSpan = 1.8
   }
 
-  const HALF_TAIL_WIDTH = TILE_SIZE / 6
-  const HALF_HEAD_WIDTH = TILE_SIZE / 2
-  const RADIUS = TILE_SIZE * (tileSpan - 1)
+  const HALF_TAIL_WIDTH = SHAPE_SIZE / 6
+  const HALF_HEAD_WIDTH = SHAPE_SIZE / 2
+  const RADIUS = SHAPE_SIZE * (tileSpan - 1)
   const ANGLE_START = 0
-  const ANGLE_END = Math.PI - Math.asin(0.25 * (TILE_SIZE * 1.2) / RADIUS)
+  const ANGLE_END = Math.PI - Math.asin(0.25 * (SHAPE_SIZE * 1.2) / RADIUS)
 
   create2DArrow(
     vertices,
@@ -29,7 +29,7 @@ function makeRotateGeometry (tileSpan) {
   )
 
   for (let i = 0; i < vertices.length; i += 3) {
-    vertices[i + 1] += TILE_SIZE
+    vertices[i + 1] += SHAPE_SIZE
     vertices[i + 2] -= 1
   }
 
