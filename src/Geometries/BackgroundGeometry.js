@@ -17,11 +17,12 @@ for (let i = 0; i < N; i++) {
     const o12 = (j + 1) + i * N
     const o21 = j + ((i + 1) % N) * N
     const o22 = (j + 1) + ((i + 1) % N) * N
-    indices.push(
-      o11, o12, o21,
-      o21, o22, o12
-    )
+    if (j < N - 1) {
+      indices.push(
+        o11, o12, o21,
+        o21, o22, o12
+      )
+    }
   }
 }
-
 export const BackgroundGeometry = new Geometry({ vertices, indices })

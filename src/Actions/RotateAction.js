@@ -6,31 +6,46 @@ import { tempMatrix4 } from '../temps'
 
 const rotationMatrix = tempMatrix4
 
-export class RotateAction extends SimpleAction {
-  constructor (puzzle, position, direction = 1) {
+class RotateAction extends SimpleAction {
+  constructor (puzzle, position, direction) {
     super(puzzle, position, RotateGeometry)
     this.direction = direction
     this.matrix.els[0] = direction
   }
 
-  *execute () {
+  *execute (animate = true, reverse = false) {
+    const direction = reverse ? -this.direction : this.direction
     const tile = this.puzzle.getTile(this.position)
-    const rotationMatrixFrom = tile.matrix.clone()
-    rotationMatrixFrom.setTranslation(0, 0, 0)
-    let t = 0
-    while (t < ACTION_DURATION) {
-      rotationMatrix.rotateZ(this.direction * elastic(t / ACTION_DURATION) * Math.PI / 2)
-      tile.matrix.multiply(rotationMatrix, rotationMatrixFrom)
-      tile.matrix.setTranslation(tile.position * TILE_SIZE * 2, 0, 0)
-      t += yield
+    if (animate) {
+      const rotationMatrixFrom = tile.matrix.clone()
+      rotationMatrixFrom.setTranslation(0, 0, 0)
+      let t = 0
+      while (t < ACTION_DURATION) {
+        rotationMatrix.rotateZ(direction * elastic(t / ACTION_DURATION) * Math.PI / 2)
+        tile.matrix.multiply(rotationMatrix, rotationMatrixFrom)
+        tile.matrix.setTranslation(tile.position * TILE_SIZE * 2, 0, 0)
+        t += yield
+      }
     }
     tile.orientation = [
-      this.direction * -tile.orientation[1],
-      this.direction * tile.orientation[0],
+      direction * -tile.orientation[1],
+      direction * tile.orientation[0],
 
-      this.direction * -tile.orientation[3],
-      this.direction * tile.orientation[2],
+      direction * -tile.orientation[3],
+      direction * tile.orientation[2],
     ]
-    tile.syncMatrixToOrientation()
+    tile.updateState()
+  }
+}
+
+export class RotateCWAction extends RotateAction {
+  constructor (puzzle, position) {
+    super(puzzle, position, 1)
+  }
+}
+
+export class RotateCCWAction extends RotateAction {
+  constructor (puzzle, position) {
+    super(puzzle, position, -1)
   }
 }

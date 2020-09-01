@@ -1,97 +1,107 @@
 import { TheRollercoaster } from './Rollercoaster'
-import { TheShapeShader } from './Shaders/ShapeShader'
-import { U_MODELMATRIX, U_COLOR } from './sharedLiterals'
 import { TheCamera } from './Camera'
 import { Transform3D } from './Transform3D'
 import { FourShape, CircleShape, TriangleShape } from './Geometries/Shapes'
-import { TILE_SIZE } from './constants'
+import { FlipHAction } from './Actions/FlipHAction'
 import { FlipVAction } from './Actions/FlipVAction'
 import { SwapAction } from './Actions/SwapAction'
-import { RotateAction } from './Actions/RotateAction'
+import { RotateCWAction, RotateCCWAction } from './Actions/RotateAction'
 import { ShiftAction } from './Actions/ShiftAction'
 import { gl } from './Graphics'
-import { Matrix4 } from './Math/Matrix4'
 import { Input } from './Input'
-import { FlipHAction } from './Actions/FlipHAction'
-import { tempMatrix4 } from './temps'
+import { Tile } from './Tile'
 
-const scaleMatrix = new Matrix4([
-  1.1, 0, 0, 0,
-  0, 1.1, 0, 0,
-  0, 0, 1.1, 0,
-  0, 0, 0, 1
-])
-
-class Tile extends Transform3D {
-  constructor (puzzle, shape, position) {
-    super()
-    this.position = position
-    this.puzzle = puzzle
-    this.shape = shape
-    this.orientation = [1, 0, 0, 1]
-    this.syncMatrixToOrientation()
-  }
-
-  syncMatrixToOrientation () {
-    this.matrix.els.set([
-      this.orientation[0], this.orientation[1], 0, 0,
-      this.orientation[2], this.orientation[3], 0, 0,
-      0, 0, 1, 0,
-      this.position * TILE_SIZE * 2, 0, 0, 1
-    ])
-  }
-
-  render () {
-    gl.disable(gl.DEPTH_TEST)
-    TheShapeShader.use({
-      [U_MODELMATRIX]: tempMatrix4.multiply(this.worldMatrix, scaleMatrix),
-      [U_COLOR]: 0
-    })
-    this.shape.draw()
-    TheShapeShader.use({
-      [U_MODELMATRIX]: this.worldMatrix,
-      [U_COLOR]: 1
-    })
-    this.shape.draw()
-    gl.enable(gl.DEPTH_TEST)
-  }
-}
+const simpleActions = [FlipHAction, FlipVAction, RotateCWAction, RotateCCWAction]
 
 export class Puzzle extends Transform3D {
-  constructor () {
+  constructor (difficulty) {
     super()
-    this.t = 0
+
+    this.offset = -Math.PI
 
     this.bufferedClick = false
 
-    const root = new Transform3D()
-    root.matrix.setTranslation(0, 0, -50)
+    this.root = new Transform3D()
+    this.root.matrix.setTranslation(0, 0, -50)
 
-    this.add(root)
+    this.add(this.root)
 
-    this.tiles = [
-      root.add(new Tile(this, FourShape, -3)),
-      root.add(new Tile(this, FourShape, -2)),
-      root.add(new Tile(this, FourShape, -1)),
-      root.add(new Tile(this, CircleShape, 0)),
-      root.add(new Tile(this, FourShape, 1)),
-      root.add(new Tile(this, TriangleShape, 2)),
-      root.add(new Tile(this, FourShape, 3))
-    ]
-
-    this.actions = [
-      root.add(new ShiftAction(this, -4)),
-      root.add(new SwapAction(this, 0, 2)),
-      root.add(new SwapAction(this, 2, 3, true)),
-      root.add(new FlipVAction(this, -2)),
-      root.add(new RotateAction(this, 0, 1)),
-      root.add(new RotateAction(this, 1, -1)),
-      root.add(new FlipHAction(this, 2, 1)),
-      root.add(new RotateAction(this, 3, -1)),
-      root.add(new ShiftAction(this, 4))
-    ]
+    this.create(difficulty)
 
     this.executionCoroutine = null
+  }
+
+  create (difficulty) {
+    if (difficulty > 7) {
+      this.createTiles(3)
+    }
+    else if (difficulty > 4) {
+      this.createTiles(2)
+    }
+    else {
+      this.createTiles(1)
+    }
+
+    this.createActions(difficulty)
+  }
+
+  createTiles (amount) {
+    function chooseShape () {
+      const r = Math.random()
+      if (r < 0.5) return FourShape
+      return TriangleShape
+    }
+    function chooseSign () {
+      return Math.random() < 0.5 ? 1 : -1
+    }
+    function chooseOrientation () {
+      if (Math.random() < 0.5) {
+        return [chooseSign(), 0, 0, chooseSign()]
+      } else {
+        return [0, chooseSign(), chooseSign(), 0]
+      }
+    }
+    function getMirroredOrientation (orientation) {
+      return [-orientation[0], orientation[1], -orientation[2], orientation[3]]
+    }
+
+    this.tiles = []
+    for (let i = amount; i >= 1; i--) {
+      this.tiles.push(new Tile(this, chooseShape(), -i, chooseOrientation()))
+    }
+
+    this.tiles.push(new Tile(this, CircleShape, 0, [1, 0, 0, 1]))
+    for (let i = amount - 1; i >= 0; i--) {
+      const tile = this.tiles[i]
+      this.tiles.push(new Tile(this, tile.shape, -tile.position, getMirroredOrientation(tile.orientation)))
+    }
+
+    this.tiles.forEach(tile => {
+      this.root.add(tile)
+      tile.updateState()
+    })
+  }
+
+  createActions (difficulty) {
+    this.actions = []
+
+    const validPositions = this.tiles.map(tile => tile.position).filter(x => x)
+
+    const maxSimpleActionCount = validPositions.length
+    const simpleActionCount = Math.min(maxSimpleActionCount, Math.max(1, Math.ceil(difficulty / 2)))
+
+    for (let i = 0; i < simpleActionCount; i++) {
+      const Action = simpleActions[Math.floor(Math.random() * simpleActions.length)]
+      const index = Math.floor(Math.random() * validPositions.length)
+      let position = validPositions[index]
+      this.actions.push(new Action(this, position))
+      validPositions.splice(index, 1)
+    }
+
+    this.actions.forEach(action => {
+      this.root.add(action)
+      action.execute(false, true).next()
+    })
   }
 
   getTile (index) {
@@ -99,17 +109,28 @@ export class Puzzle extends Transform3D {
   }
 
   step (delta) {
-    this.matrix = TheRollercoaster.getTransformAt(TheCamera.t + this.t)
+    this.matrix = TheRollercoaster.getTransformAt(TheCamera.trackPosition + this.offset)
 
     document.body.style.cursor = ''
 
     if (this.executionCoroutine && this.executionCoroutine.next(delta).done) {
+      this.checkState()
       this.executionCoroutine = null
     }
 
-    this.checkInput()
+    if (Math.abs(this.offset) < 0.001 && !this.done) {
+      this.checkInput()
+    }
 
     this.updateMatrices()
+  }
+
+  checkState () {
+    for (let tile of this.tiles) {
+      if (!tile.hasMirroredTile()) return
+    }
+    this.done = true
+    this.tiles.forEach(tile => tile.active = true)
   }
 
   checkInput () {

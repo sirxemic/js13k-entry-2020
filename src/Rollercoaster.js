@@ -31,7 +31,7 @@ class Rollercoaster {
   getTransformAt (t) {
     const point = this.getPointAt(t)
     const tangent = this.getDerivativeAt(t).normalize()
-    const normal = this.getSecondDerivativeAt(t)//.multiplyScalar(-1)
+    const normal = this.getSecondDerivativeAt(t)
     const bitangent = new Vector3().crossVectors(tangent, normal).normalize()
     normal.crossVectors(bitangent, tangent)
     const result = new Matrix4([

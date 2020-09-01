@@ -11,19 +11,21 @@ export class FlipVAction extends SimpleAction {
     super(puzzle, position, TheFlipVGeometry)
   }
 
-  *execute () {
+  *execute (animate = true) {
     const tile = this.puzzle.getTile(this.position)
-    const rotationMatrixFrom = tile.matrix.clone()
-    rotationMatrixFrom.setTranslation(0, 0, 0)
-    let t = 0
-    while (t < ACTION_DURATION) {
-      rotationMatrix.rotateX(elastic(t / ACTION_DURATION) * Math.PI)
-      tile.matrix.multiply(rotationMatrix, rotationMatrixFrom)
-      tile.matrix.setTranslation(tile.position * TILE_SIZE * 2, 0, 0)
-      t += yield
+    if (animate) {
+      const rotationMatrixFrom = tile.matrix.clone()
+      rotationMatrixFrom.setTranslation(0, 0, 0)
+      let t = 0
+      while (t < ACTION_DURATION) {
+        rotationMatrix.rotateX(elastic(t / ACTION_DURATION) * Math.PI)
+        tile.matrix.multiply(rotationMatrix, rotationMatrixFrom)
+        tile.matrix.setTranslation(tile.position * TILE_SIZE * 2, 0, 0)
+        t += yield
+      }
     }
     tile.orientation[1] = -tile.orientation[1]
     tile.orientation[3] = -tile.orientation[3]
-    tile.syncMatrixToOrientation()
+    tile.updateState()
   }
 }

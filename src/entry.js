@@ -7,7 +7,16 @@ import { gl, TheCanvas } from './Graphics'
 import { Input } from './Input'
 import { BackgroundGeometry } from './Geometries/BackgroundGeometry'
 
-const puzzle = new Puzzle()
+const STATE_INTRO = 0
+const STATE_PLAYING = 1
+const STATE_SOLVE_TRANSITION = 2
+const STATE_FAIL_TRANSITION = 3
+
+let difficulty = 10
+let currentPuzzle = new Puzzle(difficulty)
+let nextPuzzle
+
+let state = STATE_INTRO
 
 let lastTime = 0
 function tick (time) {
@@ -20,7 +29,14 @@ function tick (time) {
   }
 
   TheCamera.step(delta)
-  puzzle.step(delta)
+
+  switch (state) {
+    case STATE_INTRO:
+      currentPuzzle.offset -= currentPuzzle.offset * (1 - Math.exp(-10 * delta))
+  }
+
+  currentPuzzle.step(delta)
+  if (nextPuzzle) nextPuzzle.step(delta)
 
   Input.postUpdate()
 
@@ -35,7 +51,8 @@ function tick (time) {
   TheRollercoasterShader.use()
   TheRollercoasterGeometry.draw()
 
-  puzzle.render()
+  currentPuzzle.render()
+  if (nextPuzzle) nextPuzzle.render()
 }
 
 tick()

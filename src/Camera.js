@@ -11,13 +11,14 @@ class Camera {
     this.projectionMatrix = new Matrix4()
     this.viewMatrix = new Matrix4()
     this.position = new Vector3()
-    this.t = 0
+    this.trackPosition = 0
   }
 
   step (delta) {
-    this.t += 700 * delta / TheRollercoaster.getDerivativeAt(this.t).length()
-    const transform = TheRollercoaster.getTransformAt(this.t)
+    this.trackPosition += 700 * delta / TheRollercoaster.getDerivativeAt(this.trackPosition).length()
+    const transform = TheRollercoaster.getTransformAt(this.trackPosition)
     this.position.set(transform.els[12], transform.els[13], transform.els[14])
+
     this.viewMatrix.getInverse(transform)
 
     this.projectionMatrix.fromPerspective(fovx, TheCanvas.width / TheCanvas.height, 5, 10000)

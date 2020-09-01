@@ -30,23 +30,25 @@ export class SwapAction extends Action {
     this.matrix.setTranslation(this.mid, 0, 0)
   }
 
-  *execute () {
+  *execute (animate = true) {
     const tile1 = this.puzzle.getTile(this.position1)
     const tile2 = this.puzzle.getTile(this.position2)
 
     const tile1Index = this.puzzle.tiles.indexOf(tile1)
     const tile2Index = this.puzzle.tiles.indexOf(tile2)
 
-    let t = 0
-    while (t < ACTION_DURATION) {
-      const a = elastic(t / ACTION_DURATION) * Math.PI
-      const t1X = this.mid - this.span * Math.cos(a)
-      const t1Y = -this.span * Math.sin(a)
-      const t2X = this.mid + this.span * Math.cos(a)
-      const t2Y = this.span * Math.sin(a)
-      tile1.matrix.setTranslation(t1X, t1Y, 0)
-      tile2.matrix.setTranslation(t2X, t2Y, 0)
-      t += yield
+    if (animate) {
+      let t = 0
+      while (t < ACTION_DURATION) {
+        const a = elastic(t / ACTION_DURATION) * Math.PI
+        const t1X = this.mid - this.span * Math.cos(a)
+        const t1Y = -this.span * Math.sin(a)
+        const t2X = this.mid + this.span * Math.cos(a)
+        const t2Y = this.span * Math.sin(a)
+        tile1.matrix.setTranslation(t1X, t1Y, 0)
+        tile2.matrix.setTranslation(t2X, t2Y, 0)
+        t += yield
+      }
     }
 
     this.puzzle.tiles[tile1Index] = tile2
@@ -54,8 +56,8 @@ export class SwapAction extends Action {
     tile1.position = this.position2
     tile2.position = this.position1
 
-    tile1.syncMatrixToOrientation()
-    tile2.syncMatrixToOrientation()
+    tile1.updateState()
+    tile2.updateState()
   }
 
   render () {

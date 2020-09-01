@@ -1,4 +1,33 @@
-<body style="margin:0;background:#000">
-  <div style="font-size:4vw;text-shadow:.1em .1em 0 #000;position:fixed;top:0.1em;right:0.3em;color:#FFF;font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif">SCORE: 654654</div>
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+body {
+  margin:0;
+  overflow: hidden;
+  font-size:4vw;
+  font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  color: #FFF;
+  text-shadow:.1em .1em 0 #000
+}
+
+.s {
+  position:fixed;
+  top:0.1em;
+  right:0.3em;
+}
+.u {
+  position:fixed;
+  bottom: 0.1em;
+  left: 0.3em;
+  cursor: pointer;
+}
+</style>
+</head>
+</html>
+<body>
+  <div class="s">SCORE: 0</div>
+  <div class="u">UNDO</div>
   <canvas></canvas>
   <script src="build.js"></script>
+</body>

@@ -11,7 +11,7 @@ const HALF_HEAD_WIDTH = TILE_SIZE / 2
 const HEAD_START = 0.8
 const RADIUS = TILE_SIZE
 const ANGLE_START = -5
-const ANGLE_END = -1.5
+const ANGLE_END = -1.8
 
 create3DArrow(vertices, normals, indices, HALF_TAIL_WIDTH, HALF_HEAD_WIDTH, HEAD_START, (t, width) => {
   const a = ANGLE_START + (ANGLE_END - ANGLE_START) * t

@@ -18,17 +18,19 @@ export class ShiftAction extends Action {
     this.maxY = 0.75 * TILE_SIZE
   }
 
-  *execute () {
-    let t = 0
-    while (t < ACTION_DURATION) {
-      const offset = elastic(t / ACTION_DURATION) * 2 * TILE_SIZE * this.direction
-      for (let tile of this.puzzle.tiles) {
-        tile.matrix.els[12] = tile.position * TILE_SIZE * 2 + offset
-        if (tile.position === this.position - this.direction && t > ACTION_DURATION / 2) {
-          tile.matrix.els[12] = -this.position * TILE_SIZE * 2 + offset
+  *execute (animate = true) {
+    if (animate) {
+      let t = 0
+      while (t < ACTION_DURATION) {
+        const offset = elastic(t / ACTION_DURATION) * 2 * TILE_SIZE * this.direction
+        for (let tile of this.puzzle.tiles) {
+          tile.matrix.els[12] = tile.position * TILE_SIZE * 2 + offset
+          if (tile.position === this.position - this.direction && t > ACTION_DURATION / 2) {
+            tile.matrix.els[12] = -this.position * TILE_SIZE * 2 + offset
+          }
         }
+        t += yield
       }
-      t += yield
     }
 
     for (let tile of this.puzzle.tiles) {
@@ -36,7 +38,7 @@ export class ShiftAction extends Action {
       if (tile.position === this.position) {
         tile.position = -this.position + this.direction
       }
-      tile.syncMatrixToOrientation()
+      tile.updateState()
     }
     if (this.direction === 1) {
       this.puzzle.tiles.unshift(this.puzzle.tiles.pop())
