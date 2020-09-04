@@ -17,6 +17,8 @@ function createShader (type, source) {
   return shader
 }
 
+export let currentProgram
+
 export class ShaderProgram {
   constructor (vertexSource, fragmentSource) {
     this.program = gl.createProgram()
@@ -37,6 +39,8 @@ export class ShaderProgram {
   }
 
   use (uniforms = {}) {
+    currentProgram = this.program
+
     uniforms[U_PROJECTIONMATRIX] = TheCamera.projectionMatrix
     uniforms[U_VIEWMATRIX] = TheCamera.viewMatrix
     uniforms[U_CAMERAPOSITION] = TheCamera.position

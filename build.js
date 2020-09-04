@@ -54,24 +54,6 @@ const transformConstToLet = {
   }
 }
 
-const minifyShaders = {
-  transformBundle (code) {
-    return code.replace(/"\/\*glsl\*\/([\s\S]+?)"/g, shaderCode => {
-      const s = JSON.parse(shaderCode)
-      return JSON.stringify(
-        s.substr(8)
-          .replace(/\s+/g, ' ')
-          .replace(/^\s+|\s+$/g, '')
-          .replace(/\/\*.+?\*\//g, '')
-          .replace(/\b0(\.\d+)\b/g, (g0, g1) => g1)
-          .replace(/\b(\d+\.)0\b/g, (g0, g1) => g1)
-          .replace(/(\W) /g, (g0, g1) => g1)
-          .replace(/ (\W)/g, (g0, g1) => g1)
-      )
-    })
-  }
-}
-
 const transformGlConsts = {
   transformBundle (code) {
     for (let [key, value] of Object.entries(webglConstants)) {
@@ -88,7 +70,34 @@ const preMangle = {
     // TODO
     return code
       .replace(/orientation/g, 'mOrientation')
-      .replace(/\["(\w+)"\]:/g, (g0, g1) => g1 + ':')
+  }
+}
+
+function minifyShaders (code) {
+  return code.replace(/"\/\*glsl\*\/([\s\S]+?)"/g, shaderCode => {
+    const s = JSON.parse(shaderCode)
+    return JSON.stringify(
+      s.substr(8)
+        .replace(/\s+/g, ' ')
+        .replace(/^\s+|\s+$/g, '')
+        .replace(/\/\*.+?\*\//g, '')
+        .replace(/\b0(\.\d+)\b/g, (g0, g1) => g1)
+        .replace(/\b(\d+\.)0\b/g, (g0, g1) => g1)
+        .replace(/(\W) /g, (g0, g1) => g1)
+        .replace(/ (\W)/g, (g0, g1) => g1)
+    )
+  })
+}
+
+function minifyMore (code) {
+  return code
+    .replace(/\["(\w+)"\]:/g, (g0, g1) => g1 + ':')
+    .replace(/\[(\d+)\]:/g, (g0, g1) => g1 + ':')
+}
+
+const postCCMinify = {
+  transformBundle (code) {
+    return minifyShaders(minifyMore(code))
   }
 }
 
@@ -102,7 +111,7 @@ const plugins = [
   preMangle,
   replaceEnvs,
   closureCompilerPlugin,
-  minifyShaders
+  postCCMinify
 ]
 
 if (!fs.existsSync('dist')){

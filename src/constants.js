@@ -6,3 +6,5 @@ export const ACTION_DURATION = 0.3
 
 export const DISTANCE_FROM_CAMERA = 50
 export const FOVX = 1.5
+
+export const TIME_LIMIT = 10

@@ -19,7 +19,7 @@ export class Transform3D {
       this.worldMatrix = this.matrix
     }
     for (let child of this.children) {
-      child.worldMatrix.multiply(this.worldMatrix, child.matrix)
+      child.worldMatrix.multiplyMatrices(this.worldMatrix, child.matrix)
       child.updateMatrices(false)
     }
   }

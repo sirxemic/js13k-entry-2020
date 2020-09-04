@@ -51,7 +51,7 @@ export class Matrix4 {
     ])
   }
 
-  multiply (a, b) {
+  multiplyMatrices (a, b) {
 		const ae = a.els
 		const be = b.els
 

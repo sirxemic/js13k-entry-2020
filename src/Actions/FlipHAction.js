@@ -9,7 +9,7 @@ const rotationMatrix = tempMatrix4
 export class FlipHAction extends SimpleAction {
   constructor (puzzle, position) {
     super(puzzle, position, TheFlipHGeometry)
-    this.matrix.els[0] = -Math.sign(position)
+    this.matrix.els[0] = -Math.sign(position) || 1
   }
 
   *execute (animate = true) {
@@ -20,7 +20,7 @@ export class FlipHAction extends SimpleAction {
       let t = 0
       while (t < ACTION_DURATION) {
         rotationMatrix.rotateY(elastic(t / ACTION_DURATION) * Math.PI)
-        tile.matrix.multiply(rotationMatrix, rotationMatrixFrom)
+        tile.matrix.multiplyMatrices(rotationMatrix, rotationMatrixFrom)
         tile.matrix.setTranslation(tile.position * TILE_SIZE, 0, 0)
         t += yield
       }

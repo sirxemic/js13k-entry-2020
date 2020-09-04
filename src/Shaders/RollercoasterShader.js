@@ -27,7 +27,7 @@ void main() {
 `
 
 export const fragmentShader = `/*glsl*/
-precision mediump float;
+precision highp float;
 
 uniform vec3 ${U_CAMERAPOSITION};
 

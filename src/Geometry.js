@@ -1,4 +1,8 @@
 import { gl } from './Graphics'
+import { currentProgram } from './ShaderProgram'
+import { ATTR_POSITION, ATTR_NORMAL } from './sharedLiterals'
+
+let currentLocations = []
 
 export class Geometry {
   constructor ({
@@ -24,20 +28,31 @@ export class Geometry {
   }
 
   draw () {
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.verticesBuffer)
-    gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0)
+    const positionsLocation = gl.getAttribLocation(currentProgram, ATTR_POSITION)
+    const normalsLocation = gl.getAttribLocation(currentProgram, ATTR_NORMAL)
 
-    if (this.normalsBuffer) {
-      gl.enableVertexAttribArray(1)
+    const newLocations = []
+    newLocations[positionsLocation] = true
+    newLocations[normalsLocation] = true
+
+    for (let i = 0; i < 2; i++) {
+      if (!currentLocations[i] && newLocations[i]) {
+        gl.enableVertexAttribArray(i)
+      }
+      if (currentLocations[i] && !newLocations[i]) {
+        gl.disableVertexAttribArray(i)
+      }
+    }
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.verticesBuffer)
+    gl.vertexAttribPointer(positionsLocation, 3, gl.FLOAT, false, 0, 0)
+
+    if (normalsLocation !== -1) {
       gl.bindBuffer(gl.ARRAY_BUFFER, this.normalsBuffer)
-      gl.vertexAttribPointer(1, 3, gl.FLOAT, false, 0, 0)
+      gl.vertexAttribPointer(normalsLocation, 3, gl.FLOAT, false, 0, 0)
     }
 
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer)
     gl.drawElements(gl.TRIANGLES, this.triangleCount, gl.UNSIGNED_SHORT, 0)
-
-    if (this.normalsBuffer) {
-      gl.disableVertexAttribArray(1)
-    }
   }
 }

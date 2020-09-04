@@ -4,30 +4,78 @@
 <style>
 body {
   margin:0;
+  background:#000;
   overflow: hidden;
   font-size:4vw;
   font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
   color: #FFF;
-  text-shadow:.1em .1em 0 #000
+  line-height: 1;
+  text-shadow: .1em .1em 0 #000;
 }
-
-.s {
+canvas, div {
   position:fixed;
+}
+div {
+}
+.l {
+  top: 0.1em;
+  left: 0.3em;
+}
+.td {
   top:0.1em;
   right:0.3em;
+  text-align: right;
 }
-.u {
-  position:fixed;
+.sd {
   bottom: 0.1em;
   left: 0.3em;
+}
+.u {
+  bottom: 0.1em;
+  right: 0.3em;
+}
+.i {
   cursor: pointer;
+  text-shadow: none;
+  transition: filter 0.2s ease;
+  filter: drop-shadow(.1em .1em 0 #000);
+}
+.i:hover {
+  background-image: linear-gradient(to right, rgb(156, 13, 13), #9d0, rgb(0, 255, 191), rgb(59, 22, 160));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(.1em .1em 0 #000);
+}
+.bd {
+  top: 60%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.bd2 {
+  top: calc(60% + 5vw);
+  font-size: 0.75em;
+}
+
+.s1 .ui { display: none; }
+.s1 .bd { display: block; }
+.s2 .ui { display: block; }
+.s2 .bd { display: none; }
+
+.g {
+  display: inline-block;
+  text-align: center;
+  width: 0.5em;
 }
 </style>
 </head>
 </html>
-<body>
-  <div class="s">SCORE: 0</div>
-  <div class="u">UNDO</div>
+<body class="s1">
   <canvas></canvas>
+  <div class="ui l"></div>
+  <div class="ui sd">SCORE<br><span class="s"></span></div>
+  <div class="ui td">TIME<br><span class="t"></span></div>
+  <div class="ui i u">UNDO</div>
+  <div class="i bd">START</div>
   <script src="build.js"></script>
 </body>

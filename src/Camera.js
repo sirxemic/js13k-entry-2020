@@ -4,6 +4,7 @@ import { TheRollercoaster } from './Rollercoaster'
 import { TheCanvas } from './Graphics'
 import { Input } from './Input'
 import { DISTANCE_FROM_CAMERA, FOVX } from './constants'
+import { delta } from './globals'
 
 class Camera {
   constructor () {
@@ -13,7 +14,7 @@ class Camera {
     this.trackPosition = 0
   }
 
-  step (delta) {
+  step () {
     this.trackPosition += 700 * delta / TheRollercoaster.getDerivativeAt(this.trackPosition).length()
     const transform = TheRollercoaster.getTransformAt(this.trackPosition)
     this.position.set(transform.els[12], transform.els[13], transform.els[14])
