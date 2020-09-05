@@ -136,10 +136,7 @@ function advZip () {
   })
 }
 
-async function build() {
-  const bundle = await rollup.rollup(inputOptions)
-  let { code } = await bundle.generate(outputOptions)
-
+function createHtml () {
   let minifiedHtml = minifyHtml(
     fs.readFileSync('index.html', { encoding: 'utf-8' }),
     {
@@ -149,11 +146,32 @@ async function build() {
     }
   )
 
+  let classNames
+  // Yes I know this is terrible
+  eval(
+    fs.readFileSync(__dirname + '/src/classNames.js', { encoding: 'utf-8' })
+      .replace('export const', '')
+  )
+
+  Object.entries(classNames).forEach(([key, value]) => {
+    minifiedHtml = minifiedHtml.replace(new RegExp(`\\b${key}\\b`, 'g'), value)
+  })
+
+  return minifiedHtml
+}
+
+async function build() {
+  const bundle = await rollup.rollup(inputOptions)
+  let { code } = await bundle.generate(outputOptions)
+
+  let minifiedHtml = createHtml()
+
   // Strip "use strict"
   code = code.substring("'use strict';".length)
 
   let newScriptTag = `<script>${code}</script>`
-  minifiedHtml = minifiedHtml.replace(/<script[^>]+><\/script>/, m => newScriptTag)
+  minifiedHtml = minifiedHtml
+    .replace(/<script[^>]+><\/script>/, m => newScriptTag)
 
   fs.writeFileSync('dist/index.html', minifiedHtml, { encoding: 'utf-8' })
 

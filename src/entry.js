@@ -7,16 +7,13 @@ import { gl, TheCanvas } from './Graphics'
 import { Input } from './Input'
 import { BackgroundGeometry } from './Geometries/BackgroundGeometry'
 import { warpRenderTarget } from './RenderTarget'
-import { levels, tutorialCount, startScreen } from './Levels/levels'
+import { levels, startScreen, isTutorialLevel } from './Levels/levels'
 import { FSM } from './FSM'
-import { delta, setDelta } from './globals'
+import { delta, setDelta, time, setTime, updateTime, addToScore, levelIndex, setLevelIndex } from './globals'
 import { TIME_LIMIT } from './constants'
-
-const startButton = document.querySelector('.bd')
-const tutorialButton = document.querySelector('.bd2')
-const scoreDisplay = document.querySelector('.s')
-const timeDisplay = document.querySelector('.t')
-const levelDisplay = document.querySelector('.l')
+import { updateUI, updateLevelDisplay, showStart } from './UI'
+import { loadAssets, MainSong } from './Assets'
+import { TheAudioContext } from './Audio/Context'
 
 function resizeCanvas () {
   TheCanvas.width = window.innerWidth
@@ -27,37 +24,40 @@ function resizeCanvas () {
 resizeCanvas()
 window.onresize = resizeCanvas
 
-const STATE_START_SCREEN = 0
-const STATE_PLAYING = 1
-const STATE_SOLVE_TRANSITION = 2
-const STATE_FAIL_TRANSITION = 3
-
-let levelIndex = 0
 let nextLevelIndex
 let currentPuzzle = new Puzzle(startScreen)
 let nextPuzzle
-let time = 0
-let score = 0
-let transitionTime
+let transitionTime = 0
 
-function getSpan (d) {
-  return `<span class="g">${d}</span>`
-}
-
-function makeSpanned (n) {
-  return [...n].map(getSpan).join('')
-}
-
-function updateUI () {
-  const scoreString = '' + score
-  scoreDisplay.innerHTML = makeSpanned(scoreString.padStart(10 - scoreString.length, '0'))
-
-  const timeParts = time.toFixed(2).split('.')
-  timeDisplay.innerHTML = makeSpanned(timeParts[0]) + '.' + makeSpanned(timeParts[1])
-}
+const STATE_INIT = 0
+const STATE_START_SCREEN = 1
+const STATE_PLAYING = 2
+const STATE_SOLVE_TRANSITION = 3
+const STATE_FAIL_TRANSITION = 4
 
 const gameFSM = new FSM({
+  [STATE_INIT]: {
+    execute () {
+      currentPuzzle.offset -= currentPuzzle.offset * (1 - Math.exp(-10 * delta))
+      transitionTime += delta
+      if (transitionTime > 1.5) {
+        gameFSM.setState(STATE_START_SCREEN)
+      }
+    }
+  },
+
   [STATE_START_SCREEN]: {
+    enter () {
+      showStart(async () => {
+        await TheAudioContext.resume()
+        MainSong.play()
+        currentPuzzle.isActive = false
+        nextLevelIndex = levelIndex + 1
+        nextPuzzle = new Puzzle(levels[levelIndex])
+        gameFSM.setState(STATE_SOLVE_TRANSITION)
+      })
+    },
+
     execute () {
       currentPuzzle.offset -= currentPuzzle.offset * (1 - Math.exp(-10 * delta))
     }
@@ -65,20 +65,22 @@ const gameFSM = new FSM({
 
   [STATE_PLAYING]: {
     enter () {
-      levelDisplay.textContent = levelIndex < tutorialCount ? 'TUTORIAL' : `LEVEL ${levelIndex - tutorialCount + 1}`
+      updateLevelDisplay(levelIndex)
+
       currentPuzzle.offset = 0
       currentPuzzle.isActive = true
-      time = TIME_LIMIT
+      setTime(TIME_LIMIT)
     },
+
     execute () {
       if (currentPuzzle.done) {
         gameFSM.setState(STATE_SOLVE_TRANSITION)
-      } else if (levelIndex >= tutorialCount) {
+      } else if (!isTutorialLevel(levelIndex)) {
         const x = (TIME_LIMIT - time) / TIME_LIMIT
         nextPuzzle.offset = -Math.PI + Math.PI * x ** 0.25
-        time -= delta
+        updateTime(delta)
         if (time <= 0) {
-          time = 0
+          setTime(0)
           gameFSM.setState(STATE_FAIL_TRANSITION)
         }
       }
@@ -87,9 +89,13 @@ const gameFSM = new FSM({
 
   [STATE_SOLVE_TRANSITION]: {
     enter () {
+      if (!isTutorialLevel(levelIndex)) {
+        addToScore(Math.ceil((time + 5 * (1 + Math.floor(levelIndex / 2))) * 100) * 10)
+      }
       currentPuzzle.isActive = false
       transitionTime = 0
     },
+
     execute () {
       transitionTime += delta
       currentPuzzle.offset = transitionTime / 100
@@ -97,7 +103,7 @@ const gameFSM = new FSM({
       if (transitionTime > 1) {
         currentPuzzle.offset = 0
         currentPuzzle = nextPuzzle
-        levelIndex = nextLevelIndex
+        setLevelIndex(nextLevelIndex)
         if (nextLevelIndex < levels.length - 1) {
           nextLevelIndex++
         }
@@ -107,42 +113,32 @@ const gameFSM = new FSM({
       }
     }
   },
+
   [STATE_FAIL_TRANSITION]: {
     enter () {
       currentPuzzle.setFailed()
+      transitionTime = 0
     },
     execute () {
+      transitionTime += delta
+      currentPuzzle.offset = transitionTime / 100
       nextPuzzle.offset -= nextPuzzle.offset * (1 - Math.exp(-10 * delta))
-      if (nextPuzzle.offset > -0.000001) {
-        nextPuzzle.offset = 0
+      if (transitionTime > 1) {
+        currentPuzzle.offset = 0
         currentPuzzle = nextPuzzle
-        levelIndex = Math.min(levelIndex + 1, levels.length - 2)
-        nextPuzzle = new Puzzle(levels[levelIndex + 1])
+        setLevelIndex(nextLevelIndex)
+        if (nextLevelIndex < levels.length - 1) {
+          nextLevelIndex++
+        }
+        nextPuzzle = new Puzzle(levels[nextLevelIndex])
 
         gameFSM.setState(STATE_PLAYING)
       }
     }
   }
-}, STATE_START_SCREEN)
+}, STATE_INIT)
 
-startButton.addEventListener('click', () => {
-  currentPuzzle.isActive = false
-  nextLevelIndex = levelIndex + 1
-  nextPuzzle = new Puzzle(levels[levelIndex])
-  gameFSM.setState(STATE_SOLVE_TRANSITION)
-  document.body.className = 's2'
-})
-
-let lastTime = 0
-function tick (time) {
-  requestAnimationFrame(tick)
-
-  setDelta(Math.min(1/60, Math.max(0.5, (time - lastTime) / 1000)))
-  lastTime = time
-  if (isNaN(delta)) {
-    return
-  }
-
+function step () {
   TheCamera.step()
 
   gameFSM.step()
@@ -151,7 +147,9 @@ function tick (time) {
   if (nextPuzzle) nextPuzzle.step()
 
   Input.postUpdate()
+}
 
+function render () {
   gl.viewport(0, 0, TheCanvas.width, TheCanvas.height)
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
@@ -166,8 +164,22 @@ function tick (time) {
   // Because of shape depth hack, render next before current, so maybe get rid of hack if time and/or space allows
   if (nextPuzzle) nextPuzzle.render()
   currentPuzzle.render()
+}
+
+let lastTime = 0
+function tick (time) {
+  requestAnimationFrame(tick)
+
+  setDelta(Math.min(1/60, Math.max(0.5, (time - lastTime) / 1000)))
+  lastTime = time
+  if (isNaN(delta)) {
+    return
+  }
+
+  step()
+  render()
 
   updateUI()
 }
 
-tick()
+loadAssets().then(tick)

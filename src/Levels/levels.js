@@ -16,6 +16,7 @@ export const startScreen = {
 }
 
 export const levels = [
+  // Tutorials
   {
     shapes: [FourShape, CircleShape, FourShape],
     orientations: [O1, O1, O1],
@@ -46,6 +47,8 @@ export const levels = [
       [ShiftAction, 2]
     ]
   },
+
+  // Easy levels
   {
     shapes: [FourShape, TriangleShape, TriangleShape, FourShape, CircleShape],
     orientations: [O1, O1, [1, 0, 0, -1], [1, 0, 0, -1], O1],
@@ -87,4 +90,15 @@ export const levels = [
       [ShiftAction, -3]
     ]
   }
+
+  // Medium levels
+
 ]
+
+export function isTutorialLevel (index) {
+  return index < tutorialCount
+}
+
+export function getLevelLabel (index) {
+  return isTutorialLevel(index) ? 'TUTORIAL' : `LEVEL ${index - tutorialCount + 1}`
+}

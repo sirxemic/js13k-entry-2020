@@ -4,8 +4,7 @@
   "description": "",
   "main": "test.js",
   "scripts": {
-    "start": "webpack-dev-server -d -w",
-    "editor": "webpack-dev-server -d -w --config webpack.editor-config.js",
+    "dev": "webpack-dev-server -d -w",
     "build": "node build.js"
   },
   "author": "",

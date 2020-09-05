@@ -10,10 +10,6 @@ export class Action extends Transform3D {
     this.hoverAmount = 0
   }
 
-  execute () {
-
-  }
-
   step () {
     this.hoverAmount += (this.hover - this.hoverAmount) * 0.25
   }

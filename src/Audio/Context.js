@@ -1,9 +1,11 @@
 export let TheAudioContext = new AudioContext()
-export let TheAudioDestination = TheAudioContext.createDynamicsCompressor()
-TheAudioDestination.knee.setValueAtTime(40, 0)
-TheAudioDestination.threshold.setValueAtTime(-12, 0)
+// export let TheAudioDestination = TheAudioContext.createDynamicsCompressor()
+// TheAudioDestination.knee.setValueAtTime(40, 0)
+// TheAudioDestination.threshold.setValueAtTime(-12, 0)
 
-TheAudioDestination.connect(TheAudioContext.destination)
+// TheAudioDestination.connect(TheAudioContext.destination)
+
+export let TheAudioDestination = TheAudioContext.destination
 
 export let TheReverbDestination
 

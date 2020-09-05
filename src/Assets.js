@@ -1,8 +1,11 @@
 import { waitForNextFrame } from './utils'
 import { TheAudioContext, setReverbDestination, contextSampleRate } from './Audio/Context'
 import { createPlaceholderSound } from './Audio/Samples/Placeholder'
+import createMainSong from './Audio/MainSong'
 import { createAudioBuffer } from './Audio/SoundGeneration'
 import { createReverbIR } from './Audio/Samples/ReverbIR'
+
+export let MainSong
 
 export let PlaceholderSound = createAudioBuffer(createPlaceholderSound)
 
@@ -29,5 +32,5 @@ export async function loadAssets () {
 
   await createReverb()
 
-  document.body.className = ''
+  MainSong = await createMainSong()
 }
