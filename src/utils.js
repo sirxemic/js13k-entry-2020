@@ -108,8 +108,9 @@ export function elastic (t, a = 1, p = 0.5) {
   return 2 ** (-10 * t) * Math.sin((t - 0.125) * 4 * Math.PI) + 1
 }
 
-export function smoothstep(x) {
-  return x * x * (3 - 2 * x)
+export function smoothstep(edge0, edge1, x) {
+  const t = Math.max(Math.min((x - edge0) / (edge1 - edge0), 1), 0)
+  return t * t * (3 - 2 * t)
 }
 
 /**

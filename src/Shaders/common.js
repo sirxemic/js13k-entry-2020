@@ -39,7 +39,7 @@ float fbm(vec2 p, float t) {
   return f;
 }
 
-/* Star code origin: https://www.shadertoy.com/view/llj3zV */
+/* Star code based on: https://www.shadertoy.com/view/llj3zV */
 vec3 stars(vec3 dir) {
   vec3 n = abs(dir);
   vec2 uv = (n.x > n.y && n.x > n.z) ? dir.yz / dir.x :

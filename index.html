@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<title>404</title>
 <style>
 body {
   margin:0;
@@ -53,12 +54,8 @@ canvas, div {
 }
 
 .ui, .startButton {
-  display: none;
-}
-
-.startButton {
   opacity: 0;
-  transition: all 0.2s ease;
+  transition: opacity 0.2s ease;
 }
 
 .stateMainMenu .startButton,
@@ -68,7 +65,7 @@ canvas, div {
   opacity: 1;
 }
 
-.stateTutorial .dynamic {
+.stateTutorial .dynamic, .scoreAddText {
   opacity: 0.4;
   text-shadow: none;
 }
@@ -76,7 +73,11 @@ canvas, div {
 .glyph {
   display: inline-block;
   text-align: center;
-  width: 0.6em;
+}
+
+.metricLabel {
+  display: block;
+  font-size: 0.75em;
 }
 </style>
 </head>
@@ -84,9 +85,10 @@ canvas, div {
   <canvas></canvas>
   <div class="ui">
     <div class="levelLabel"></div>
-    <div class="scoreDiv dynamic">SCORE<br><span class="scoreText"></span></div>
-    <div class="timeDiv dynamic">TIME<br><span class="timeText"></span></div>
-    <div class="clickable undoButton">UNDO</div>
+    <div class="scoreDiv dynamic"><span class="metricLabel">SCORE</span><span class="scoreText"></span><span class="scoreAddText"></span></div>
+    <div class="timeDiv dynamic"><span class="metricLabel">TIME</span><span class="timeText"></span></div>
   </div>
   <div class="clickable startButton">START</div>
   <script src="build.js"></script>
+</body>
+</html>

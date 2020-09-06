@@ -3,7 +3,8 @@ import { Vector3 } from './Math/Vector3'
 import { Matrix3 } from './Math/Matrix3'
 import { Matrix4 } from './Math/Matrix4'
 import { TheCamera } from './Camera'
-import { U_PROJECTIONMATRIX, U_VIEWMATRIX, U_CAMERAPOSITION, U_TEXTURE } from './sharedLiterals'
+import { U_PROJECTIONMATRIX, U_VIEWMATRIX, U_CAMERAPOSITION, U_TEXTURE, ATTR_POSITION, U_MODELMATRIX, U_NORMALMATRIX } from './sharedLiterals'
+import { common } from './Shaders/common'
 
 function createShader (type, source) {
   var shader = gl.createShader(type)
@@ -19,11 +20,23 @@ function createShader (type, source) {
 
 export let currentProgram
 
+const vertexShaderHeader = `/*glsl*/
+attribute vec3 ${ATTR_POSITION};
+uniform mat4 ${U_MODELMATRIX};
+uniform mat4 ${U_VIEWMATRIX};
+uniform mat4 ${U_PROJECTIONMATRIX};
+uniform mat3 ${U_NORMALMATRIX};
+`
+const fragmentShaderHeader = `/*glsl*/
+precision highp float;
+${common}
+`
+
 export class ShaderProgram {
   constructor (vertexSource, fragmentSource) {
     this.program = gl.createProgram()
-    gl.attachShader(this.program, createShader(gl.VERTEX_SHADER, vertexSource))
-    gl.attachShader(this.program, createShader(gl.FRAGMENT_SHADER, fragmentSource))
+    gl.attachShader(this.program, createShader(gl.VERTEX_SHADER, vertexShaderHeader + vertexSource))
+    gl.attachShader(this.program, createShader(gl.FRAGMENT_SHADER, fragmentShaderHeader + fragmentSource))
 
     gl.linkProgram(this.program)
     if (process.env.NODE_ENV === 'development' && !gl.getProgramParameter(this.program, gl.LINK_STATUS)) {

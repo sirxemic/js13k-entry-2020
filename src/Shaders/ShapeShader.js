@@ -10,12 +10,6 @@ import {
 import { ShaderProgram } from '../ShaderProgram'
 
 export const vertexShader = `/*glsl*/
-uniform mat4 ${U_MODELMATRIX};
-uniform mat4 ${U_VIEWMATRIX};
-uniform mat4 ${U_PROJECTIONMATRIX};
-
-attribute vec3 ${ATTR_POSITION};
-
 varying vec2 vp;
 
 void main() {
@@ -25,8 +19,6 @@ void main() {
 `
 
 export const fragmentShader = `/*glsl*/
-precision mediump float;
-
 uniform float ${U_COLOR};
 uniform float ${U_ACTIVE};
 uniform float ${U_TIME};

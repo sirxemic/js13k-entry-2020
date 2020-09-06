@@ -1,4 +1,6 @@
-export let TheAudioContext = new AudioContext()
+const C = window.AudioContext || window.webkitAudioContext
+
+export let TheAudioContext = new C()
 // export let TheAudioDestination = TheAudioContext.createDynamicsCompressor()
 // TheAudioDestination.knee.setValueAtTime(40, 0)
 // TheAudioDestination.threshold.setValueAtTime(-12, 0)

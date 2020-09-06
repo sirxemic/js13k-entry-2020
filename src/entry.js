@@ -12,8 +12,11 @@ import { FSM } from './FSM'
 import { delta, setDelta, time, setTime, updateTime, addToScore, levelIndex, setLevelIndex } from './globals'
 import { TIME_LIMIT } from './constants'
 import { updateUI, updateLevelDisplay, showStart } from './UI'
-import { loadAssets, MainSong } from './Assets'
+import { loadAssets, MainSong, SuccessJingle, FailSound } from './Assets'
 import { TheAudioContext } from './Audio/Context'
+import { playSample } from './Audio'
+import { Quad } from './Geometries/Quad'
+import { VignetteShader } from './Shaders/VignetteShader'
 
 function resizeCanvas () {
   TheCanvas.width = window.innerWidth
@@ -54,6 +57,7 @@ const gameFSM = new FSM({
         currentPuzzle.isActive = false
         nextLevelIndex = levelIndex + 1
         nextPuzzle = new Puzzle(levels[levelIndex])
+        updateLevelDisplay(levelIndex)
         gameFSM.setState(STATE_SOLVE_TRANSITION)
       })
     },
@@ -73,7 +77,7 @@ const gameFSM = new FSM({
     },
 
     execute () {
-      if (currentPuzzle.done) {
+      if (currentPuzzle.isDone) {
         gameFSM.setState(STATE_SOLVE_TRANSITION)
       } else if (!isTutorialLevel(levelIndex)) {
         const x = (TIME_LIMIT - time) / TIME_LIMIT
@@ -89,6 +93,7 @@ const gameFSM = new FSM({
 
   [STATE_SOLVE_TRANSITION]: {
     enter () {
+      playSample(SuccessJingle, 1, true)
       if (!isTutorialLevel(levelIndex)) {
         addToScore(Math.ceil((time + 5 * (1 + Math.floor(levelIndex / 2))) * 100) * 10)
       }
@@ -97,9 +102,9 @@ const gameFSM = new FSM({
     },
 
     execute () {
-      transitionTime += delta
-      currentPuzzle.offset = transitionTime / 100
-      nextPuzzle.offset -= nextPuzzle.offset * (1 - Math.exp(-10 * delta))
+      transitionTime += delta * 0.75
+      currentPuzzle.offset = (transitionTime ** 2) / 100
+      nextPuzzle.offset -= nextPuzzle.offset * (1 - Math.exp(-8 * delta))
       if (transitionTime > 1) {
         currentPuzzle.offset = 0
         currentPuzzle = nextPuzzle
@@ -116,6 +121,7 @@ const gameFSM = new FSM({
 
   [STATE_FAIL_TRANSITION]: {
     enter () {
+      playSample(FailSound, 0.1, true)
       currentPuzzle.setFailed()
       transitionTime = 0
     },

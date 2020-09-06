@@ -142,7 +142,8 @@ function createHtml () {
     {
       collapseWhitespace: true,
       minifyCSS: true,
-      removeAttributeQuotes: true
+      removeAttributeQuotes: true,
+      removeOptionalTags: true
     }
   )
 

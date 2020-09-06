@@ -3,7 +3,7 @@ import {
   applyEnvelope,
   getFrequencyDelta,
   lowPassFilter,
-  sampleSawtooth,
+  sampleSawtooth
 } from '../SoundGeneration'
 
 const volumeEnvelope = [
@@ -16,11 +16,8 @@ const volumeEnvelope = [
 export function createLeadSound (frequency, length) {
   let p = 0
 
-  function getSample () {
+  function getSample (t) {
     p += getFrequencyDelta(frequency)
-    if (p > 1) {
-      p -= 1
-    }
     return sampleSawtooth(p)
   }
 

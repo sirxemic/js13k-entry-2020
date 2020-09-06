@@ -15,6 +15,9 @@ import { Quad } from './Geometries/Quad'
 import { U_TEXTURE, U_WRAP_START, U_WRAP_LENGTH } from './sharedLiterals'
 import { SHAPE_SIZE, DISTANCE_FROM_CAMERA, FOVX } from './constants'
 import { delta } from './globals'
+import { smoothstep } from './utils'
+import { playSample } from './Audio'
+import { RotateSound } from './Assets'
 
 const simpleActions = [FlipHAction, FlipVAction, RotateCWAction, RotateCCWAction]
 
@@ -27,7 +30,7 @@ export class Puzzle extends Transform3D {
     // Falsy initializations can be removed to save space
     // this.isActive = false
     // this.failed = false
-    // this.done = false
+    // this.isDone = false
     // this.bufferedClick = false
     // this.active = false
     // this.executionCoroutine = null
@@ -79,10 +82,15 @@ export class Puzzle extends Transform3D {
 
   step () {
     if (this.failed) {
-      this.failStep += delta
-      this.root.matrix.rotateZ(this.failStep * 5 * Math.PI)
-      const x = SHAPE_SIZE * 2 * this.failStep
-      this.root.matrix.setTranslation(-x, x, -DISTANCE_FROM_CAMERA + 30 * SHAPE_SIZE * this.failStep)
+      this.endStep += delta
+      this.root.matrix.rotateZ(this.endStep * 5 * Math.PI)
+      const x = SHAPE_SIZE * 2 * this.endStep
+      this.root.matrix.setTranslation(-x, x, -DISTANCE_FROM_CAMERA + 30 * SHAPE_SIZE * this.endStep)
+    } else if (this.isDone) {
+      this.endStep += delta
+      const x = smoothstep(0, 0.5, this.endStep)
+      this.root.matrix.rotateY(x * Math.PI)
+      this.root.matrix.setTranslation(0, 0, -DISTANCE_FROM_CAMERA)
     }
     this.matrix = TheRollercoaster.getTransformAt(TheCamera.trackPosition + this.offset)
 
@@ -91,7 +99,7 @@ export class Puzzle extends Transform3D {
       this.executionCoroutine = null
     }
 
-    if (this.isActive && !this.done) {
+    if (this.isActive && !this.isDone) {
       this.checkInput()
     }
 
@@ -102,7 +110,7 @@ export class Puzzle extends Transform3D {
     for (let tile of this.tiles) {
       if (!tile.hasMirroredTile()) return
     }
-    this.done = true
+    this.setDone()
     this.tiles.forEach(tile => tile.active = true)
   }
 
@@ -127,23 +135,31 @@ export class Puzzle extends Transform3D {
         } else {
           this.bufferedClick = false
           this.executionCoroutine = hoverAction.execute()
+          playSample(RotateSound, 1, true)
         }
       }
     }
   }
 
+  setDone () {
+    this.isDone = true
+    this.endStep = 0
+  }
+
   setFailed () {
+    TheCamera.shake()
     this.failed = true
-    this.failStep = 0
+    this.endStep = 0
   }
 
   render () {
-    gl.enable(gl.BLEND)
-    gl.blendFunc(gl.SRC_ALPHA, gl.ONE)
-    for (let action of this.actions) {
-      action.render()
+    if (!this.isDone) {
+      gl.blendFunc(gl.SRC_ALPHA, gl.ONE)
+      for (let action of this.actions) {
+        action.render()
+      }
+      gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
     }
-    gl.disable(gl.BLEND)
 
     if (this.isActive && !this.failed) {
       warpRenderTarget.bind()
@@ -154,15 +170,12 @@ export class Puzzle extends Transform3D {
       const visiblePuzzleWidth = 2 * Math.tan(FOVX / 2) * DISTANCE_FROM_CAMERA
       const normalizedTileWidth = 2 * SHAPE_SIZE / visiblePuzzleWidth
 
-      gl.enable(gl.BLEND)
-      gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
       PuzzleShader.use({
         [U_TEXTURE]: 0,
         [U_WRAP_START]: 0.5 + (this.size + 0.5) * normalizedTileWidth,
         [U_WRAP_LENGTH]: normalizedTileWidth
       })
       Quad.draw()
-      gl.disable(gl.BLEND)
     } else {
       this.renderTiles()
     }

@@ -1,30 +1,30 @@
 import { Vector3 } from './Math/Vector3'
 import { Matrix4 } from './Math/Matrix4'
 
-const SCALE = 5000
+const SCALE = 3000
 
 class Rollercoaster {
   getPointAt (t) {
     return new Vector3(
       SCALE * Math.sin(2 * t),
-      SCALE * Math.sin(t),
-      SCALE * ((Math.cos(2 * t) + Math.cos(3 * t)) / 2 - 0.25)
+      SCALE * 2 * Math.sin(t),
+      SCALE * ((Math.cos(2 * t) + Math.cos(3 * t)) - 0.25)
     )
   }
 
   getDerivativeAt (t) {
     return new Vector3(
       SCALE * 2 * Math.cos(2 * t),
-      SCALE * Math.cos(t),
-      SCALE / 2 * (-2 * Math.sin(2 * t) - 3 * Math.sin(3 * t))
+      SCALE * 2 * Math.cos(t),
+      SCALE * (-2 * Math.sin(2 * t) - 3 * Math.sin(3 * t))
     )
   }
 
   getSecondDerivativeAt (t) {
     return new Vector3(
       SCALE * -4 * Math.sin(2 * t),
-      SCALE * -Math.sin(t),
-      SCALE / 2 * (-4 * Math.cos(2 * t) - 9 * Math.cos(3 * t))
+      SCALE * -2 * Math.sin(t),
+      SCALE * (-4 * Math.cos(2 * t) - 9 * Math.cos(3 * t))
     )
   }
 

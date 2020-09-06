@@ -7,8 +7,6 @@ import {
 import { ShaderProgram } from '../ShaderProgram'
 
 export const vertexShader = `/*glsl*/
-attribute vec3 ${ATTR_POSITION};
-
 varying vec2 vuv;
 
 void main() {
@@ -18,8 +16,6 @@ void main() {
 `
 
 export const fragmentShader = `/*glsl*/
-precision mediump float;
-
 uniform sampler2D ${U_TEXTURE};
 uniform float ${U_WRAP_START};
 uniform float ${U_WRAP_LENGTH};

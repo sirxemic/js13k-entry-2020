@@ -44,25 +44,18 @@ export const levels = [
     actions: [
       [FlipHAction, 0],
       [ShiftAction, -2],
-      [ShiftAction, 2]
+      [ShiftAction, 2],
     ]
   },
 
-  // Easy levels
+  // Normal levels
   {
-    shapes: [FourShape, TriangleShape, TriangleShape, FourShape, CircleShape],
-    orientations: [O1, O1, [1, 0, 0, -1], [1, 0, 0, -1], O1],
+    shapes: [TriangleShape, TriangleShape, CircleShape, TriangleShape, TriangleShape],
+    orientations: [[1, 0, 0, -1], [1, 0, 0, -1], O1, [1, 0, 0, -1], O1],
     actions: [
-      [RotateCWAction, 0],
-      [ShiftAction, -3]
-    ]
-  },
-  {
-    shapes: [TriangleShape, FourShape, FourShape, TriangleShape, CircleShape],
-    orientations: [O1, O1, [1, 0, 0, -1], [1, 0, 0, -1], O1],
-    actions: [
-      [RotateCWAction, 0],
-      [ShiftAction, -3]
+      [RotateCWAction, -1],
+      [FlipHAction, 1],
+      [SwapAction, -1, 2],
     ]
   },
   {
@@ -75,24 +68,25 @@ export const levels = [
     ]
   },
   {
-    shapes: [FourShape, FourShape, FourShape, FourShape, CircleShape],
+    shapes: [FourShape, TriangleShape, TriangleShape, FourShape, CircleShape],
     orientations: [O1, O1, [1, 0, 0, -1], [1, 0, 0, -1], O1],
     actions: [
-      [RotateCWAction, 0],
+      [RotateCCWAction, 0],
       [ShiftAction, -3]
     ]
   },
   {
-    shapes: [FourShape, FourShape, FourShape, FourShape, CircleShape],
-    orientations: [O1, O1, [1, 0, 0, -1], [1, 0, 0, -1], O1],
+    shapes: [FourShape, FourShape, FourShape, FourShape, FourShape, FourShape, CircleShape],
+    orientations: [O1, [1, 0, 0, -1], [-1, 0, 0, 1], [0, 1, 1, 0], [0, 1, -1, 0], [0, -1, -1, 0], O1],
     actions: [
-      [RotateCWAction, 0],
-      [ShiftAction, -3]
+      [FlipVAction, -3],
+      [RotateCCWAction, -1],
+      [RotateCWAction, 1],
+      [FlipHAction, 3],
+      [ShiftAction, -4],
+      [ShiftAction, 4]
     ]
-  }
-
-  // Medium levels
-
+  },
 ]
 
 export function isTutorialLevel (index) {

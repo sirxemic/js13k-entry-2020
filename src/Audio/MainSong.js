@@ -107,18 +107,15 @@ function createPluckTrack () {
 export default async function createSong () {
   const [
     bufferLead,
-    //bufferPluck,
     bufferBass,
   ] = await Promise.all([
     createLeadTrack,
-    //createPluckTrack,
     createBassTrack,
   ].map(func => createAudioBuffer(func)))
 
   return new Song(
     [
       { buffer: bufferLead, sendToReverb: 1 },
-      //{ buffer: bufferPluck, sendToReverb: 0.5 },
       { buffer: bufferBass },
     ],
     { start: 0 }

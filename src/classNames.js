@@ -8,10 +8,11 @@ export const classNames = {
   scoreDiv: 'f',
   dynamic: 'g',
   scoreText: 'h',
+  scoreAddText: 'p',
   timeDiv: 'i',
   timeText: 'j',
   clickable: 'k',
-  undoButton: 'l',
   startButton: 'm',
-  glyph: 'n'
+  glyph: 'n',
+  metricLabel: 'q'
 }

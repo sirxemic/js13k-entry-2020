@@ -3,21 +3,12 @@ import {
   U_VIEWMATRIX,
   U_PROJECTIONMATRIX,
   ATTR_POSITION,
-  ATTR_NORMAL,
-  U_NORMALMATRIX,
   U_CAMERAPOSITION,
   U_COLOR
 } from '../sharedLiterals'
 import { ShaderProgram } from '../ShaderProgram'
 
 export const vertexShader = `/*glsl*/
-uniform mat4 ${U_MODELMATRIX};
-uniform mat4 ${U_VIEWMATRIX};
-uniform mat4 ${U_PROJECTIONMATRIX};
-uniform mat3 ${U_NORMALMATRIX};
-
-attribute vec3 ${ATTR_POSITION};
-
 varying float vd;
 
 void main() {
@@ -27,8 +18,6 @@ void main() {
 `
 
 export const fragmentShader = `/*glsl*/
-precision mediump float;
-
 uniform vec3 ${U_CAMERAPOSITION};
 uniform float ${U_COLOR};
 

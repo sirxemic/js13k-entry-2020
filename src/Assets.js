@@ -1,13 +1,17 @@
 import { waitForNextFrame } from './utils'
 import { TheAudioContext, setReverbDestination, contextSampleRate } from './Audio/Context'
-import { createPlaceholderSound } from './Audio/Samples/Placeholder'
+import { createRotateSound } from './Audio/Samples/Rotate'
+import { createSuccessJingle } from './Audio/Samples/SuccessJingle'
 import createMainSong from './Audio/MainSong'
 import { createAudioBuffer } from './Audio/SoundGeneration'
 import { createReverbIR } from './Audio/Samples/ReverbIR'
+import { createFailSound } from './Audio/Samples/Fail'
 
 export let MainSong
 
-export let PlaceholderSound = createAudioBuffer(createPlaceholderSound)
+export let RotateSound = createAudioBuffer(createRotateSound)
+export let SuccessJingle = createAudioBuffer(createSuccessJingle)
+export let FailSound = createAudioBuffer(createFailSound)
 
 async function createReverb () {
   const reverb = TheAudioContext.createConvolver()
@@ -26,7 +30,9 @@ async function createReverb () {
 export async function loadAssets () {
   await Promise.all(
     [
-      PlaceholderSound
+      RotateSound,
+      SuccessJingle,
+      FailSound
     ]
   )
 

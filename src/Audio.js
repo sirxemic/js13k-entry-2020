@@ -4,9 +4,8 @@ export async function playSample (sample, volume = 1, toReverb = false) {
   let source = TheAudioContext.createBufferSource()
   source.buffer = await sample
 
-  if (toReverb) {
-    source.connect(TheReverbDestination)
-  }
+  let toConnect = source
+
 
   if (volume !== 1) {
     let gainNode = TheAudioContext.createGain()
@@ -14,8 +13,13 @@ export async function playSample (sample, volume = 1, toReverb = false) {
     source.connect(gainNode)
     source.onended = () => gainNode.disconnect(TheAudioDestination)
     gainNode.connect(TheAudioDestination)
+    toConnect = gainNode
   } else {
     source.connect(TheAudioDestination)
+  }
+
+  if (toReverb) {
+    toConnect.connect(TheReverbDestination)
   }
 
   source.start()
