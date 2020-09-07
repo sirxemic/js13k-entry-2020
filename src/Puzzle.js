@@ -182,10 +182,8 @@ export class Puzzle extends Transform3D {
   }
 
   renderTiles () {
-    gl.disable(gl.DEPTH_TEST)
     for (let tile of this.tiles) {
       tile.render()
     }
-    gl.enable(gl.DEPTH_TEST)
   }
 }

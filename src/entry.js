@@ -167,9 +167,8 @@ function render () {
   TheRollercoasterShader.use()
   TheRollercoasterGeometry.draw()
 
-  // Because of shape depth hack, render next before current, so maybe get rid of hack if time and/or space allows
-  if (nextPuzzle) nextPuzzle.render()
   currentPuzzle.render()
+  if (nextPuzzle) nextPuzzle.render()
 }
 
 let lastTime = 0

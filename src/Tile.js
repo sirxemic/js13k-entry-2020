@@ -47,13 +47,6 @@ export class Tile extends Transform3D {
     this.effectMix += (this.active - this.effectMix) * 0.2
     TheShapeShader.use({
       [U_MODELMATRIX]: this.worldMatrix,
-      [U_COLOR]: this.effectMix,
-      [U_ACTIVE]: 0,
-      [U_TIME]: performance.now() / 1000
-    })
-    this.shape.outline.draw()
-    TheShapeShader.use({
-      [U_MODELMATRIX]: this.worldMatrix,
       [U_COLOR]: 1,
       [U_ACTIVE]: this.effectMix,
       [U_TIME]: performance.now() / 1000
