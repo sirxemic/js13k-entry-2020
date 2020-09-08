@@ -147,6 +147,7 @@ function step () {
 
   gameFSM.step()
 
+  document.body.style.cursor = ''
   currentPuzzle.step()
   if (nextPuzzle) nextPuzzle.step()
 

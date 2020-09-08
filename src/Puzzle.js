@@ -124,9 +124,8 @@ export class Puzzle extends Transform3D {
       action.hover = false
     }
 
-    document.body.style.cursor = hoverAction ? 'pointer' : ''
-
     if (hoverAction) {
+      document.body.style.cursor = 'pointer'
       hoverAction.hover = true
 
       if (Input.mousePress || this.bufferedClick) {
