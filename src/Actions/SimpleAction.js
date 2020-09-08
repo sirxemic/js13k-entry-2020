@@ -7,7 +7,7 @@ export class SimpleAction extends Action {
     super(puzzle)
     this.geometry = geometry
     this.position = position
-    this.matrix.setTranslation(position * TILE_SIZE, 0, -0.5)
+    this.matrix.setTranslation(position * TILE_SIZE, 0, -0.25)
 
     this.minX = (position - 0.5) * TILE_SIZE
     this.maxX = (position + 0.5) * TILE_SIZE

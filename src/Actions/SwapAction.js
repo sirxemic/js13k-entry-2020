@@ -15,19 +15,20 @@ export class SwapAction extends Action {
       this.matrix.rotateZ(Math.PI)
     }
 
+    this.mid = (position1 + position2) * TILE_SIZE / 2
+    this.span = (position2 - position1) * TILE_SIZE / 2
+
     this.minX = (this.position1 - 0.25) * TILE_SIZE
     this.maxX = (this.position2 + 0.25) * TILE_SIZE
     if (rotate180) {
-      this.maxY = -SHAPE_SIZE
-      this.minY = -SHAPE_SIZE - (span - 1) * SHAPE_SIZE
+      this.maxY = -this.shape.boundingBox[1]
+      this.minY = -this.shape.boundingBox[3]
     } else {
-      this.minY = SHAPE_SIZE
-      this.maxY = SHAPE_SIZE + (span - 1) * SHAPE_SIZE
+      this.maxY = this.shape.boundingBox[3]
+      this.minY = this.shape.boundingBox[1]
     }
 
-    this.mid = (position1 + position2) * TILE_SIZE / 2
-    this.span = (position2 - position1) * TILE_SIZE / 2
-    this.matrix.setTranslation(this.mid, 0, 0)
+    this.matrix.setTranslation(this.mid, 0, -0.25)
   }
 
   *execute (animate = true) {

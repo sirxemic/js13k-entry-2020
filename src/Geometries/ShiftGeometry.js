@@ -1,17 +1,18 @@
-import { Geometry } from '../Geometry';
+import { Geometry } from '../Geometry'
 
-export const ShiftGeometry = new Geometry({
-  vertices: [
-    -3, -2, 0,
-    -3, 2, 0,
-    2, 0, 0
-  ],
-  normals: [
-    0, 0, 1,
-    0, 0, 1,
-    0, 0, 1
-  ],
-  indices: [
-    0, 1, 2
-  ]
-})
+const vertices = [
+  4, 0, 0,
+  2.5, -1.5, 0,
+  2.5, 1.5, 0,
+  -4, -0.5, 0,
+  -4, 0.5, 0,
+  2.5, -0.5, 0,
+  2.5,  0.5, 0,
+]
+const indices = [
+  0, 1, 2,
+  3, 4, 5,
+  4, 5, 6
+]
+
+export const ShiftGeometry = new Geometry({ vertices, indices })

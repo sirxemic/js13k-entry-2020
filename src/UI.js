@@ -23,7 +23,7 @@ function getDigitStyle () {
   const ctx = canvas.getContext('2d')
   const style = getComputedStyle(document.body)
   ctx.font = `${style.fontSize} ${style.fontFamily}`
-  return `width: ${ctx.measureText('0').width / parseInt(style.fontSize)}em`
+  return `width:${ctx.measureText('0').width / parseInt(style.fontSize)}em`
 }
 
 const glyphStyle = getDigitStyle()

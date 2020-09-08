@@ -15,8 +15,6 @@ import { updateUI, updateLevelDisplay, showStart } from './UI'
 import { loadAssets, MainSong, SuccessJingle, FailSound } from './Assets'
 import { TheAudioContext } from './Audio/Context'
 import { playSample } from './Audio'
-import { Quad } from './Geometries/Quad'
-import { VignetteShader } from './Shaders/VignetteShader'
 
 function resizeCanvas () {
   TheCanvas.width = window.innerWidth
@@ -41,7 +39,7 @@ const STATE_FAIL_TRANSITION = 4
 const gameFSM = new FSM({
   [STATE_INIT]: {
     execute () {
-      currentPuzzle.offset -= currentPuzzle.offset * (1 - Math.exp(-10 * delta))
+      currentPuzzle.trackPosition -= currentPuzzle.trackPosition * (1 - Math.exp(-10 * delta))
       transitionTime += delta
       if (transitionTime > 1.5) {
         gameFSM.setState(STATE_START_SCREEN)
@@ -55,15 +53,15 @@ const gameFSM = new FSM({
         await TheAudioContext.resume()
         MainSong.play()
         currentPuzzle.isActive = false
-        nextLevelIndex = levelIndex + 1
-        nextPuzzle = new Puzzle(levels[levelIndex])
-        updateLevelDisplay(levelIndex)
+        nextLevelIndex = 0
+        nextPuzzle = new Puzzle(levels[nextLevelIndex])
+        updateLevelDisplay(nextLevelIndex)
         gameFSM.setState(STATE_SOLVE_TRANSITION)
       })
     },
 
     execute () {
-      currentPuzzle.offset -= currentPuzzle.offset * (1 - Math.exp(-10 * delta))
+      currentPuzzle.trackPosition -= currentPuzzle.trackPosition * (1 - Math.exp(-10 * delta))
     }
   },
 
@@ -71,7 +69,7 @@ const gameFSM = new FSM({
     enter () {
       updateLevelDisplay(levelIndex)
 
-      currentPuzzle.offset = 0
+      currentPuzzle.trackPosition = 0
       currentPuzzle.isActive = true
       setTime(TIME_LIMIT)
     },
@@ -81,7 +79,7 @@ const gameFSM = new FSM({
         gameFSM.setState(STATE_SOLVE_TRANSITION)
       } else if (!isTutorialLevel(levelIndex)) {
         const x = (TIME_LIMIT - time) / TIME_LIMIT
-        nextPuzzle.offset = -Math.PI + Math.PI * x ** 0.25
+        nextPuzzle.trackPosition = -Math.PI + Math.PI * x ** 0.25
         updateTime(delta)
         if (time <= 0) {
           setTime(0)
@@ -103,10 +101,10 @@ const gameFSM = new FSM({
 
     execute () {
       transitionTime += delta * 0.75
-      currentPuzzle.offset = (transitionTime ** 2) / 100
-      nextPuzzle.offset -= nextPuzzle.offset * (1 - Math.exp(-8 * delta))
+      currentPuzzle.trackPosition = (transitionTime ** 2) / 100
+      nextPuzzle.trackPosition -= nextPuzzle.trackPosition * (1 - Math.exp(-8 * delta))
       if (transitionTime > 1) {
-        currentPuzzle.offset = 0
+        currentPuzzle.trackPosition = 0
         currentPuzzle = nextPuzzle
         setLevelIndex(nextLevelIndex)
         if (nextLevelIndex < levels.length - 1) {
@@ -127,10 +125,10 @@ const gameFSM = new FSM({
     },
     execute () {
       transitionTime += delta
-      currentPuzzle.offset = transitionTime / 100
-      nextPuzzle.offset -= nextPuzzle.offset * (1 - Math.exp(-10 * delta))
+      currentPuzzle.trackPosition = transitionTime / 100
+      nextPuzzle.trackPosition -= nextPuzzle.trackPosition * (1 - Math.exp(-10 * delta))
       if (transitionTime > 1) {
-        currentPuzzle.offset = 0
+        currentPuzzle.trackPosition = 0
         currentPuzzle = nextPuzzle
         setLevelIndex(nextLevelIndex)
         if (nextLevelIndex < levels.length - 1) {
@@ -167,8 +165,8 @@ function render () {
   TheRollercoasterShader.use()
   TheRollercoasterGeometry.draw()
 
-  currentPuzzle.render()
   if (nextPuzzle) nextPuzzle.render()
+  currentPuzzle.render()
 }
 
 let lastTime = 0

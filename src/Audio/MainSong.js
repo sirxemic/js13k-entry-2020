@@ -1,7 +1,7 @@
 import { Song } from './Song'
 import { createAudioBuffer } from './SoundGeneration'
 import { contextSampleRate } from './Context'
-import { addNotes, makeNotesFromBars, offsetNotes, applyRepeatingEnvelope } from './SongGeneration'
+import { addNotes, makeNotesFromBars, offsetNotes, applyRepeatingEnvelope, repeatNotes } from './SongGeneration'
 import { createBassSound } from './MusicSamples/Bass'
 import { createLeadSound } from './MusicSamples/Lead'
 
@@ -43,40 +43,12 @@ function createLeadTrack () {
 }
 
 function createBassTrack () {
-  const notes = makeNotesFromBars([
-    [0, -24, 1],
-    [1, -24, 1],
-    [2, -24, 1],
-    [3, -24, 1],
-    [0, -24, 1],
-    [1, -24, 1],
-    [2, -24, 1],
-    [3, -24, 1],
-    [0, -28, 1],
-    [1, -28, 1],
-    [2, -28, 1],
-    [3, -28, 1],
-    [0, -28, 1],
-    [1, -28, 1],
-    [2, -28, 1],
-    [3, -28, 1],
-    [0, -24, 1],
-    [1, -24, 1],
-    [2, -24, 1],
-    [3, -24, 1],
-    [0, -24, 1],
-    [1, -24, 1],
-    [2, -24, 1],
-    [3, -24, 1],
-    [0, -28, 1],
-    [1, -28, 1],
-    [2, -28, 1],
-    [3, -28, 1],
-    [0, -28, 1],
-    [1, -28, 1],
-    [2, -28, 1],
-    [3, -28, 1],
-  ])
+  const notes = [
+    ...offsetNotes(repeatNotes(-24, 1, 8).map(note => [...note, 1]), 0),
+    ...offsetNotes(repeatNotes(-28, 1, 8).map(note => [...note, 1]), 8),
+    ...offsetNotes(repeatNotes(-24, 1, 8).map(note => [...note, 1]), 16),
+    ...offsetNotes(repeatNotes(-28, 1, 8).map(note => [...note, 1]), 24),
+  ]
   const output = new Float32Array(sampleCount)
   addNotes(notes, output, createBassSound, bpm, true)
   addNotes(offsetNotes(makeNotesFromBars([
@@ -84,14 +56,17 @@ function createBassTrack () {
     [1, -24 + 7, 1],
     [2, -24 + 7, 1],
     [3, -24 + 7, 1],
+
     [0, -24 + 7, 1],
     [1, -24 + 7, 1],
     [2, -24 + 7, 1],
     [3, -24 + 10, 1],
+
     [0, -28 + 7, 1],
     [1, -28 + 7, 1],
     [2, -28 + 7, 1],
     [3, -28 + 7, 1],
+
     [0, -28 + 7, 1],
     [1, -28 + 7, 1],
     [2, -28 + 7, 1],

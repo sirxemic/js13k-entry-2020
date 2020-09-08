@@ -25,7 +25,7 @@ export class Puzzle extends Transform3D {
   constructor (level) {
     super()
 
-    this.offset = -Math.PI
+    this.trackPosition = -Math.PI
 
     // Falsy initializations can be removed to save space
     // this.isActive = false
@@ -92,7 +92,7 @@ export class Puzzle extends Transform3D {
       this.root.matrix.rotateY(x * Math.PI)
       this.root.matrix.setTranslation(0, 0, -DISTANCE_FROM_CAMERA)
     }
-    this.matrix = TheRollercoaster.getTransformAt(TheCamera.trackPosition + this.offset)
+    this.matrix = TheRollercoaster.getTransformAt(TheCamera.trackPosition + this.trackPosition)
 
     if (this.executionCoroutine && this.executionCoroutine.next(delta).done) {
       this.checkState()
@@ -154,11 +154,13 @@ export class Puzzle extends Transform3D {
 
   render () {
     if (!this.isDone) {
+      gl.depthMask(false)
       gl.blendFunc(gl.SRC_ALPHA, gl.ONE)
       for (let action of this.actions) {
         action.render()
       }
       gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
+      gl.depthMask(true)
     }
 
     if (this.isActive && !this.failed) {

@@ -25,6 +25,14 @@ export class Geometry {
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW)
 
     this.triangleCount = indices.length
+
+    this.boundingBox = [1000, 1000, -1000, -1000]
+    for (let i = 0; i < vertices.length; i += 3) {
+      this.boundingBox[0] = Math.min(this.boundingBox[0], vertices[i])
+      this.boundingBox[2] = Math.max(this.boundingBox[2], vertices[i])
+      this.boundingBox[1] = Math.min(this.boundingBox[1], vertices[i + 1])
+      this.boundingBox[3] = Math.max(this.boundingBox[3], vertices[i + 1])
+    }
   }
 
   draw () {
