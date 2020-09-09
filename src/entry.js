@@ -15,6 +15,7 @@ import { updateUI, updateLevelDisplay, showStart } from './UI'
 import { loadAssets, MainSong, SuccessJingle, FailSound } from './Assets'
 import { TheAudioContext } from './Audio/Context'
 import { playSample } from './Audio'
+import { clamp } from './utils'
 
 function resizeCanvas () {
   TheCanvas.width = window.innerWidth
@@ -174,7 +175,7 @@ let lastTime = 0
 function tick (time) {
   requestAnimationFrame(tick)
 
-  setDelta(Math.min(1/60, Math.max(0.5, (time - lastTime) / 1000)))
+  setDelta(clamp((time - lastTime) / 1000, 0.001, 0.5))
   lastTime = time
   if (isNaN(delta)) {
     return

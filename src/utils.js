@@ -109,7 +109,7 @@ export function elastic (t, a = 1, p = 0.5) {
 }
 
 export function smoothstep(edge0, edge1, x) {
-  const t = Math.max(Math.min((x - edge0) / (edge1 - edge0), 1), 0)
+  const t = clamp((x - edge0) / (edge1 - edge0), 0, 1)
   return t * t * (3 - 2 * t)
 }
 

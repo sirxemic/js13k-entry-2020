@@ -19,8 +19,6 @@ import { smoothstep } from './utils'
 import { playSample } from './Audio'
 import { RotateSound } from './Assets'
 
-const simpleActions = [FlipHAction, FlipVAction, RotateCWAction, RotateCCWAction]
-
 export class Puzzle extends Transform3D {
   constructor (level) {
     super()
