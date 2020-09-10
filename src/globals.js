@@ -16,6 +16,11 @@ export function updateTime (delta) {
   time -= delta
 }
 
+export let lives = 10
+export function removeLife () {
+  lives--
+}
+
 export let levelIndex = 0
 export function setLevelIndex (index) {
   levelIndex = index

@@ -7,19 +7,19 @@ import { elastic } from '../utils'
 export class SwapAction extends Action {
   constructor (puzzle, position1, position2, rotate180) {
     super(puzzle)
-    this.position1 = position1
-    this.position2 = position2
-    const span = position2 - position1 + 1
+    const minPos = this.position1 = Math.min(position1, position2)
+    const maxPos = this.position2 = Math.max(position1, position2)
+    const span = maxPos - minPos + 1
     this.shape = SwapGeometries[span]
     if (rotate180) {
       this.matrix.rotateZ(Math.PI)
     }
 
-    this.mid = (position1 + position2) * TILE_SIZE / 2
-    this.span = (position2 - position1) * TILE_SIZE / 2
+    this.mid = (minPos + maxPos) * TILE_SIZE / 2
+    this.span = (maxPos - minPos) * TILE_SIZE / 2
 
-    this.minX = (this.position1 - 0.25) * TILE_SIZE
-    this.maxX = (this.position2 + 0.25) * TILE_SIZE
+    this.minX = (minPos - 0.25) * TILE_SIZE
+    this.maxX = (maxPos + 0.25) * TILE_SIZE
     if (rotate180) {
       this.maxY = -this.shape.boundingBox[1]
       this.minY = -this.shape.boundingBox[3]

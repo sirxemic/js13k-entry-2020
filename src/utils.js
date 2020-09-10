@@ -37,6 +37,10 @@ export function distanceSquared(x1, y1, x2, y2) {
   return dx * dx + dy * dy
 }
 
+export function pick (...args) {
+  return args[Math.floor(Math.random() * args.length)]
+}
+
 /**
  * Image generation utilities
  */

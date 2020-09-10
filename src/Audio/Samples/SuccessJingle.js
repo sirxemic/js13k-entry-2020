@@ -10,7 +10,7 @@ import {
 import { addNotes } from '../SongGeneration'
 import { contextSampleRate } from '../Context'
 
-function createSuccessSound (frequency) {
+function createSuccessSound (frequency, length) {
   const volumeEnvelope = [
     [0, 0],
     [0.1, 0.2, 0.2],
@@ -24,7 +24,7 @@ function createSuccessSound (frequency) {
     return (sampleSquare(p) + sampleSine(p) + sampleSawtooth(p)) / 16 + sampleTriangle(p)
   }
 
-  return applyEnvelope(generateSound(0.2, getSample), volumeEnvelope)
+  return applyEnvelope(generateSound(length * 3, getSample), volumeEnvelope)
 }
 
 export function createSuccessJingle () {
@@ -40,6 +40,37 @@ export function createSuccessJingle () {
     [3, 12],
     [4, 9],
     [5, 19],
+  ]
+
+  const output = new Float32Array(sampleCount)
+  addNotes(notes, output, createSuccessSound, bpm)
+
+  return output
+}
+
+export function createWinJingle () {
+  const bpm = 900
+  const measureCount = 8
+  const trackBeatCount = measureCount * 4
+  const trackDuration = trackBeatCount * 60 / bpm
+  const sampleCount = Math.ceil(trackDuration * contextSampleRate)
+  const notes = [
+    [0, 0],
+    [1, 5],
+    [2, 9],
+    [3, 12],
+    [4, 9],
+    [5, 19],
+    [6, 16],
+    [7, 19],
+    [8, 24],
+    [8, -12, 2],
+    [12, -17, 2],
+    [13, 26],
+    [14, 28],
+    [15, 31],
+    [16, 36],
+    [16, -24, 2],
   ]
 
   const output = new Float32Array(sampleCount)

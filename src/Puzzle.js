@@ -83,14 +83,14 @@ export class Puzzle extends Transform3D {
       this.endStep += delta
       this.root.matrix.rotateZ(this.endStep * 5 * Math.PI)
       const x = SHAPE_SIZE * 2 * this.endStep
-      this.root.matrix.setTranslation(-x, x, -DISTANCE_FROM_CAMERA + 30 * SHAPE_SIZE * this.endStep)
+      this.root.matrix.setTranslation(-x, x, -DISTANCE_FROM_CAMERA + 40 * SHAPE_SIZE * this.endStep)
     } else if (this.isDone) {
       this.endStep += delta
       const x = smoothstep(0, 0.5, this.endStep)
       this.root.matrix.rotateY(x * Math.PI)
-      this.root.matrix.setTranslation(0, 0, -DISTANCE_FROM_CAMERA)
+      this.root.matrix.setTranslation(0, 0, -DISTANCE_FROM_CAMERA + 16 * SHAPE_SIZE * this.endStep * this.endStep)
     }
-    this.matrix = TheRollercoaster.getTransformAt(TheCamera.trackPosition + this.trackPosition)
+    this.matrix = TheRollercoaster.getTransformAt(this.absolutePosition || (TheCamera.trackPosition + this.trackPosition))
 
     if (this.executionCoroutine && this.executionCoroutine.next(delta).done) {
       this.checkState()
@@ -147,6 +147,10 @@ export class Puzzle extends Transform3D {
     TheCamera.shake()
     this.failed = true
     this.endStep = 0
+  }
+
+  stop () {
+    this.absolutePosition = TheCamera.trackPosition + this.trackPosition
   }
 
   render () {

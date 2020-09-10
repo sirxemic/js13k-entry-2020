@@ -7,12 +7,12 @@ import { gl, TheCanvas } from './Graphics'
 import { Input } from './Input'
 import { BackgroundGeometry } from './Geometries/BackgroundGeometry'
 import { warpRenderTarget } from './RenderTarget'
-import { levels, startScreen, isTutorialLevel } from './Levels/levels'
+import { levels, tutorialCount, startScreen, isTutorialLevel } from './Levels/levels'
 import { FSM } from './FSM'
-import { delta, setDelta, time, setTime, updateTime, addToScore, levelIndex, setLevelIndex } from './globals'
+import { delta, setDelta, time, setTime, updateTime, addToScore, levelIndex, setLevelIndex, lives, removeLife } from './globals'
 import { TIME_LIMIT } from './constants'
-import { updateUI, updateLevelDisplay, showStart } from './UI'
-import { loadAssets, MainSong, SuccessJingle, FailSound } from './Assets'
+import { updateUI, updateLevelDisplay, showStart, showFinalScore } from './UI'
+import { loadAssets, MainSong, SuccessJingle, FailSound, WinJingle } from './Assets'
 import { TheAudioContext } from './Audio/Context'
 import { playSample } from './Audio'
 import { clamp } from './utils'
@@ -26,7 +26,6 @@ function resizeCanvas () {
 resizeCanvas()
 window.onresize = resizeCanvas
 
-let nextLevelIndex
 let currentPuzzle = new Puzzle(startScreen)
 let nextPuzzle
 let transitionTime = 0
@@ -36,6 +35,21 @@ const STATE_START_SCREEN = 1
 const STATE_PLAYING = 2
 const STATE_SOLVE_TRANSITION = 3
 const STATE_FAIL_TRANSITION = 4
+const STATE_FINISH = 5
+const STATE_GAMEOVER = 6
+
+function onTransitionEnd () {
+  currentPuzzle.trackPosition = 0
+  currentPuzzle = nextPuzzle
+  setLevelIndex(levelIndex + 1)
+  if (levelIndex < levels.length - 1) {
+    gameFSM.setState(STATE_PLAYING)
+    nextPuzzle = new Puzzle(levels[levelIndex + 1])
+  } else {
+    gameFSM.setState(STATE_FINISH)
+    nextPuzzle = null
+  }
+}
 
 const gameFSM = new FSM({
   [STATE_INIT]: {
@@ -50,14 +64,15 @@ const gameFSM = new FSM({
 
   [STATE_START_SCREEN]: {
     enter () {
-      showStart(async () => {
+      showStart(async (showTutorial) => {
         await TheAudioContext.resume()
         MainSong.play()
         currentPuzzle.isActive = false
-        nextLevelIndex = 0
-        nextPuzzle = new Puzzle(levels[nextLevelIndex])
-        updateLevelDisplay(nextLevelIndex)
-        gameFSM.setState(STATE_SOLVE_TRANSITION)
+        const newLevelIndex = showTutorial ? 0 : tutorialCount
+        setLevelIndex(newLevelIndex)
+        currentPuzzle = new Puzzle(levels[newLevelIndex])
+        nextPuzzle = new Puzzle(levels[newLevelIndex + 1])
+        gameFSM.setState(STATE_PLAYING)
       })
     },
 
@@ -80,7 +95,9 @@ const gameFSM = new FSM({
         gameFSM.setState(STATE_SOLVE_TRANSITION)
       } else if (!isTutorialLevel(levelIndex)) {
         const x = (TIME_LIMIT - time) / TIME_LIMIT
-        nextPuzzle.trackPosition = -Math.PI + Math.PI * x ** 0.25
+        if (nextPuzzle) {
+          nextPuzzle.trackPosition = -Math.PI + Math.PI * x ** 0.25
+        }
         updateTime(delta)
         if (time <= 0) {
           setTime(0)
@@ -102,18 +119,9 @@ const gameFSM = new FSM({
 
     execute () {
       transitionTime += delta * 0.75
-      currentPuzzle.trackPosition = (transitionTime ** 2) / 100
       nextPuzzle.trackPosition -= nextPuzzle.trackPosition * (1 - Math.exp(-8 * delta))
       if (transitionTime > 1) {
-        currentPuzzle.trackPosition = 0
-        currentPuzzle = nextPuzzle
-        setLevelIndex(nextLevelIndex)
-        if (nextLevelIndex < levels.length - 1) {
-          nextLevelIndex++
-        }
-        nextPuzzle = new Puzzle(levels[nextLevelIndex])
-
-        gameFSM.setState(STATE_PLAYING)
+        onTransitionEnd()
       }
     }
   },
@@ -123,22 +131,37 @@ const gameFSM = new FSM({
       playSample(FailSound, 0.1, true)
       currentPuzzle.setFailed()
       transitionTime = 0
+      removeLife()
     },
     execute () {
+      if (lives === 0) {
+        gameFSM.setState(STATE_GAMEOVER)
+        return
+      }
       transitionTime += delta
-      currentPuzzle.trackPosition = transitionTime / 100
       nextPuzzle.trackPosition -= nextPuzzle.trackPosition * (1 - Math.exp(-10 * delta))
       if (transitionTime > 1) {
-        currentPuzzle.trackPosition = 0
-        currentPuzzle = nextPuzzle
-        setLevelIndex(nextLevelIndex)
-        if (nextLevelIndex < levels.length - 1) {
-          nextLevelIndex++
-        }
-        nextPuzzle = new Puzzle(levels[nextLevelIndex])
-
-        gameFSM.setState(STATE_PLAYING)
+        onTransitionEnd()
       }
+    }
+  },
+
+  [STATE_FINISH]: {
+    enter () {
+      playSample(WinJingle, 1, true)
+      showFinalScore()
+    }
+  },
+
+  [STATE_GAMEOVER]: {
+    enter () {
+      MainSong.tapeStop()
+      showFinalScore()
+      nextPuzzle.stop()
+    },
+
+    execute () {
+      TheCamera.velocity += (200 - TheCamera.velocity) * (1 - Math.exp(-0.5 * delta))
     }
   }
 }, STATE_INIT)

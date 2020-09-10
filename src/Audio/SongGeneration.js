@@ -48,7 +48,7 @@ export function addNotes (notes, output, instrument, bpm, mono = false) {
   notes.forEach(note => {
     let key = note.slice(1).join('|')
     if (!bufferCache[key]) {
-      bufferCache[key] = instrument(getFrequencyForTone(note[1]), getLengthInSeconds(note[2], bpm), ...note.slice(3))
+      bufferCache[key] = instrument(getFrequencyForTone(note[1]), getLengthInSeconds(note[2] || 1, bpm), ...note.slice(3))
     }
     addSoundToBuffer(
       bufferCache[key],

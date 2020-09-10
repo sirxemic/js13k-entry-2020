@@ -1,7 +1,7 @@
 import { waitForNextFrame } from './utils'
 import { TheAudioContext, setReverbDestination, contextSampleRate } from './Audio/Context'
 import { createRotateSound } from './Audio/Samples/Rotate'
-import { createSuccessJingle } from './Audio/Samples/SuccessJingle'
+import { createSuccessJingle, createWinJingle } from './Audio/Samples/SuccessJingle'
 import createMainSong from './Audio/MainSong'
 import { createAudioBuffer } from './Audio/SoundGeneration'
 import { createReverbIR } from './Audio/Samples/ReverbIR'
@@ -11,6 +11,7 @@ export let MainSong
 
 export let RotateSound = createAudioBuffer(createRotateSound)
 export let SuccessJingle = createAudioBuffer(createSuccessJingle)
+export let WinJingle = createAudioBuffer(createWinJingle)
 export let FailSound = createAudioBuffer(createFailSound)
 
 async function createReverb () {
@@ -32,6 +33,7 @@ export async function loadAssets () {
     [
       RotateSound,
       SuccessJingle,
+      WinJingle,
       FailSound
     ]
   )

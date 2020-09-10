@@ -30,7 +30,7 @@ function makeRotateGeometry (halfSpan, halfArcAngle) {
 }
 
 const settings = [
-  [2, 0.8, 1.0],
+  [2, 0.7, 1.0],
   [3, 1.7, 0.9],
   [4, 2.6, 0.8],
   [5, 3.5, 0.8],

@@ -14,10 +14,11 @@ class Camera {
     this.position = new Vector3()
     this.trackPosition = 0
     this.shakeAmount = 0
+    this.velocity = 700
   }
 
   step () {
-    this.trackPosition += 700 * delta / TheRollercoaster.getDerivativeAt(this.trackPosition).length()
+    this.trackPosition += this.velocity * delta / TheRollercoaster.getDerivativeAt(this.trackPosition).length()
     const transform = TheRollercoaster.getTransformAt(this.trackPosition)
     transform.multiplyMatrices(transform, this.getShakeMatrix())
     this.position.set(transform.els[12], transform.els[13], transform.els[14])

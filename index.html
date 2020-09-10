@@ -4,72 +4,93 @@
 <title>404</title>
 <style>
 body {
-  margin:0;
+  position: relative;
+  height: 100vh;
+  margin: 0;
   background:#000;
   overflow: hidden;
   font-size: 4vw;
   font-family: Impact, 'Arial Narrow Bold', sans-serif;
-  font-stretch: condensed;
   color: #FFF;
   line-height: 1;
   text-shadow: .1em .1em 0 #000;
   user-select: none;
 }
-canvas, div {
-  position: fixed;
+
+canvas {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+}
+
+.ui {
+  position: absolute;
+  pointer-events: none;
+}
+
+.ui > div {
+  position: absolute;
 }
 
 .levelLabel {
   top: 0.1em;
-  left: 0.3em;
+  left: 0.15em;
+  position: absolute;
 }
 .timeDiv {
   top: 0.1em;
-  right: 0.3em;
+  right: 0.15em;
+  text-align: right;
+}
+.livesDiv {
+  top: 2.5em;
+  right: 0.15em;
   text-align: right;
 }
 .scoreDiv {
   bottom: 0.1em;
-  left: 0.3em;
-}
-.undoButton {
-  bottom: 0.1em;
-  right: 0.3em;
-}
-.clickable {
-  cursor: pointer;
-  text-shadow: none;
-  transition: filter 0.2s ease;
-  filter: drop-shadow(.1em .1em 0 #000);
-}
-.clickable:hover {
-  background-image: linear-gradient(to right, rgb(156, 13, 13), #9d0, rgb(0, 255, 191), rgb(59, 22, 160));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-.startButton {
-  top: 70%;
-  left: 50%;
-  transform: translate(-50%);
+  left: 0.15em;
 }
 
-.ui, .startButton {
+.mainMenu {
+  position: absolute;
+  top: 65%;
+  left: 0;
+  right: 0;
+  text-align: center;
+}
+
+.finalScoreDiv {
+  position: absolute;
+  left: 50%;
+  top: 55%;
+  font-size: 1.5em;
+  transform: translate(-50%, 0);
+  text-align: center;
+  pointer-events: none;
+}
+
+.ui, .mainMenu, .finalScoreDiv {
   opacity: 0;
   transition: opacity 0.2s ease;
 }
 
-.stateMainMenu .startButton,
+.stateMainMenu .mainMenu,
 .stateTutorial .ui,
-.statePlaying .ui {
-  display: block;
+.statePlaying .ui,
+.stateEnd .finalScoreDiv {
   opacity: 1;
 }
 
-.statePlaying .startButton, .stateTutorial .startButton {
+.statePlaying .mainMenu,
+.stateTutorial .mainMenu {
   display: none;
 }
 
-.stateTutorial .dynamic, .scoreAddText {
+.stateTutorial .dynamic,
+.scoreAddText {
   opacity: 0.4;
   text-shadow: none;
 }
@@ -79,20 +100,31 @@ canvas, div {
   text-align: center;
 }
 
-.metricLabel {
+.metricLabel, .startTutorialButton {
   display: block;
   font-size: 0.75em;
+}
+
+.clickable {
+  cursor: pointer;
+}
+.clickable:hover {
+  mix-blend-mode: color-dodge;
+  color: #eee;
 }
 </style>
 </head>
 <body class="stateStart">
   <canvas></canvas>
-  <div class="ui">
-    <div class="levelLabel"></div>
-    <div class="scoreDiv dynamic"><span class="metricLabel">SCORE</span><span class="scoreText"></span><span class="scoreAddText"></span></div>
-    <div class="timeDiv dynamic"><span class="metricLabel">TIME</span><span class="timeText"></span></div>
+  <div class="ui levelLabel"></div>
+  <div class="ui scoreDiv dynamic"><span class="metricLabel">SCORE</span><span class="scoreText"></span><span class="scoreAddText"></span></div>
+  <div class="ui timeDiv dynamic"><span class="metricLabel">TIME</span><span class="timeText"></span></div>
+  <div class="ui livesDiv dynamic"><span class="metricLabel">LIVES</span><span class="livesText">5</span></div>
+  <div class="finalScoreDiv"><span class="metricLabel">FINAL SCORE</span></div>
+  <div class="mainMenu">
+    <div class="clickable startButton">START</div>
+    <div class="clickable startTutorialButton">START WITH TUTORIAL</div>
   </div>
-  <div class="clickable startButton">START</div>
   <script src="build.js"></script>
 </body>
 </html>
