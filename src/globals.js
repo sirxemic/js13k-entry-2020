@@ -16,7 +16,7 @@ export function updateTime (delta) {
   time -= delta
 }
 
-export let lives = 10
+export let lives = 3
 export function removeLife () {
   lives--
 }
@@ -24,4 +24,13 @@ export function removeLife () {
 export let levelIndex = 0
 export function setLevelIndex (index) {
   levelIndex = index
+}
+
+export let showTutorial = true
+export let casualMode = false
+export function updateShowTutorial () {
+  showTutorial = !showTutorial
+}
+export function updateCasualMode () {
+  casualMode = !casualMode
 }

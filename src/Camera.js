@@ -25,7 +25,7 @@ class Camera {
 
     this.viewMatrix.getInverse(transform)
 
-    this.projectionMatrix.fromPerspective(FOVX, TheCanvas.width / TheCanvas.height, 10, 12000)
+    this.projectionMatrix.fromPerspective(FOVX, TheCanvas.width / TheCanvas.height, 8, 12000)
 
     Input.scale = 2 * DISTANCE_FROM_CAMERA * Math.tan(FOVX / 2) / TheCanvas.width
   }

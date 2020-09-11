@@ -40,12 +40,12 @@ class RotateAction extends SimpleAction {
 
 export class RotateCWAction extends RotateAction {
   constructor (puzzle, position) {
-    super(puzzle, position, 1)
+    super(puzzle, position, -1)
   }
 }
 
 export class RotateCCWAction extends RotateAction {
   constructor (puzzle, position) {
-    super(puzzle, position, -1)
+    super(puzzle, position, 1)
   }
 }

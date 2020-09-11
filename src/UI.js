@@ -1,5 +1,5 @@
 import { isTutorialLevel, getLevelLabel } from './Levels/levels'
-import { score, time, delta, lives } from './globals'
+import { score, time, delta, lives, updateShowTutorial, showTutorial, updateCasualMode, casualMode } from './globals'
 import { classNames } from './classNames'
 
 if (process.env.NODE_ENV === 'development') {
@@ -13,13 +13,26 @@ function getElement (name) {
 }
 
 const startButton = getElement(classNames.startButton)
-const startTutorialButton = getElement(classNames.startTutorialButton)
 const scoreDisplay = getElement(classNames.scoreText)
 const scoreAddDisplay = getElement(classNames.scoreAddText)
 const timeDisplay = getElement(classNames.timeText)
 const levelDisplay = getElement(classNames.levelLabel)
 const livesDisplay = getElement(classNames.livesText)
 const finalScoreDiv = getElement(classNames.finalScoreDiv)
+const tutorialOption = getElement(classNames.tutorialOption)
+const highscoreOption = getElement(classNames.highscoreOption)
+
+tutorialOption.onclick = () => {
+  updateShowTutorial()
+  tutorialOption.classList.toggle(classNames.selectedOption, showTutorial)
+}
+highscoreOption.onclick = () => {
+  updateCasualMode()
+  highscoreOption.classList.toggle(classNames.selectedOption, casualMode)
+  document.querySelectorAll('.' + classNames.dynamic).forEach(el => {
+    el.style.display = casualMode ? 'none' : 'block'
+  })
+}
 
 function getDigitStyle () {
   const canvas = document.createElement('canvas')
@@ -67,8 +80,7 @@ export function updateUI () {
 
 export function showStart (callback) {
   document.body.className = classNames.stateMainMenu
-  startButton.addEventListener('click', () => callback(false))
-  startTutorialButton.addEventListener('click', () => callback(true))
+  startButton.addEventListener('click', callback)
 }
 
 export function showFinalScore () {

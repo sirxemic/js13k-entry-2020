@@ -9,7 +9,14 @@ import { BackgroundGeometry } from './Geometries/BackgroundGeometry'
 import { warpRenderTarget } from './RenderTarget'
 import { levels, tutorialCount, startScreen, isTutorialLevel } from './Levels/levels'
 import { FSM } from './FSM'
-import { delta, setDelta, time, setTime, updateTime, addToScore, levelIndex, setLevelIndex, lives, removeLife } from './globals'
+import {
+  delta, setDelta,
+  time, setTime, updateTime,
+  addToScore,
+  levelIndex, setLevelIndex,
+  lives, removeLife,
+  showTutorial, casualMode
+} from './globals'
 import { TIME_LIMIT } from './constants'
 import { updateUI, updateLevelDisplay, showStart, showFinalScore } from './UI'
 import { loadAssets, MainSong, SuccessJingle, FailSound, WinJingle } from './Assets'
@@ -64,7 +71,7 @@ const gameFSM = new FSM({
 
   [STATE_START_SCREEN]: {
     enter () {
-      showStart(async (showTutorial) => {
+      showStart(async () => {
         await TheAudioContext.resume()
         MainSong.play()
         currentPuzzle.isActive = false
@@ -93,7 +100,7 @@ const gameFSM = new FSM({
     execute () {
       if (currentPuzzle.isDone) {
         gameFSM.setState(STATE_SOLVE_TRANSITION)
-      } else if (!isTutorialLevel(levelIndex)) {
+      } else if (!casualMode && !isTutorialLevel(levelIndex)) {
         const x = (TIME_LIMIT - time) / TIME_LIMIT
         if (nextPuzzle) {
           nextPuzzle.trackPosition = -Math.PI + Math.PI * x ** 0.25

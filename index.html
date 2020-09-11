@@ -10,7 +10,7 @@ body {
   background:#000;
   overflow: hidden;
   font-size: 4vw;
-  font-family: Impact, 'Arial Narrow Bold', sans-serif;
+  font-family: DINCondensed-Bold, Impact, 'Arial Narrow Bold', sans-serif;
   color: #FFF;
   line-height: 1;
   text-shadow: .1em .1em 0 #000;
@@ -35,23 +35,23 @@ canvas {
 }
 
 .levelLabel {
-  top: 0.1em;
-  left: 0.15em;
+  top: 0.2em;
+  left: 0.2em;
   position: absolute;
 }
 .timeDiv {
-  top: 0.1em;
-  right: 0.15em;
+  top: 0.2em;
+  right: 0.2em;
   text-align: right;
 }
 .livesDiv {
-  top: 2.5em;
-  right: 0.15em;
+  top: 2.6em;
+  right: 0.2em;
   text-align: right;
 }
 .scoreDiv {
-  bottom: 0.1em;
-  left: 0.15em;
+  bottom: 0.2em;
+  left: 0.2em;
 }
 
 .mainMenu {
@@ -90,7 +90,7 @@ canvas {
 }
 
 .stateTutorial .dynamic,
-.scoreAddText {
+.scoreAddText, .info {
   opacity: 0.4;
   text-shadow: none;
 }
@@ -100,9 +100,27 @@ canvas {
   text-align: center;
 }
 
-.metricLabel, .startTutorialButton {
+.metricLabel, .option {
   display: block;
   font-size: 0.75em;
+}
+
+.info {
+  opacity: 0;
+  font-size: 0.5em;
+  margin-top: 0.1em;
+}
+
+.option::before {
+  content: '☐ '
+}
+
+.selectedOption::before {
+  content: '☑ '
+}
+
+.highscoreOption.selectedOption + .info {
+  opacity: 0.5;
 }
 
 .clickable {
@@ -111,6 +129,10 @@ canvas {
 .clickable:hover {
   mix-blend-mode: color-dodge;
   color: #eee;
+}
+
+.startButton {
+  margin-bottom: 0.25em;
 }
 </style>
 </head>
@@ -123,7 +145,9 @@ canvas {
   <div class="finalScoreDiv"><span class="metricLabel">FINAL SCORE</span></div>
   <div class="mainMenu">
     <div class="clickable startButton">START</div>
-    <div class="clickable startTutorialButton">START WITH TUTORIAL</div>
+    <div class="clickable selectedOption option tutorialOption">SHOW TUTORIAL</div>
+    <div class="clickable option highscoreOption">CASUAL MODE</div>
+    <div class="info">There will be no time limit, but you also won't be scored</div>
   </div>
   <script src="build.js"></script>
 </body>

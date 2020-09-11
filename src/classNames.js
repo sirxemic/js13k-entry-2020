@@ -17,6 +17,9 @@ export const classNames = {
   glyph: 'p',
   metricLabel: 'q',
   finalScoreDiv: 'r',
-  startTutorialButton: 's',
-  livesText: 't'
+  option: 's',
+  tutorialOption: 't',
+  highscoreOption: 'u',
+  livesText: 'v',
+  selectedOption: 'w'
 }
