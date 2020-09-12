@@ -104,7 +104,7 @@ const gameFSM = new FSM({
 
       currentPuzzle.trackPosition = 0
       currentPuzzle.isActive = true
-      setTime(currentPuzzle.timeLimit)
+      setTime(currentPuzzle.timeLimit || 0)
 
       toggleMovesLeft(true)
     },
