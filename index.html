@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta charset="utf-8">
 <title>404</title>
 <style>
 * {
@@ -133,6 +134,14 @@ canvas {
 
 .startButton {
   margin-bottom: 0.25em;
+}
+
+@media (max-aspect-ratio: 1/1) {
+  .mainMenu::before {
+    content: 'Rotate your screen for a better experience';
+    margin: -1em 0 1em;
+    display: block;
+  }
 }
 </style>
 </head>

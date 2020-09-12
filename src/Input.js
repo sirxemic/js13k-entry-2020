@@ -5,34 +5,47 @@ export let Input = {
   y: -1000,
   scale: 1,
   mousePress: 0,
-  mouseRelease: 0,
-  mouseDown: 0,
 
   postUpdate () {
     Input.mousePress = 0
-    Input.mouseRelease = 0
   }
 }
 
 function updateMousePos (e) {
-  Input.x = (e.x - TheCanvas.width / 2) * Input.scale
-  Input.y = (TheCanvas.height / 2 - e.y) * Input.scale
+  Input.x = (e.pageX - TheCanvas.width / 2) * Input.scale
+  Input.y = (TheCanvas.height / 2 - e.pageY) * Input.scale
 }
 
-window.addEventListener('mousedown', e => {
+let touched = false
+let usingMouse = false
+
+function onMouseMove (e) {
+  usingMouse = true
   updateMousePos(e)
+}
+
+document.body.addEventListener('mousedown', e => {
+  if (!usingMouse) {
+    return
+  }
+
   if (e.button === 0) {
+    updateMousePos(e)
     Input.mousePress = 1
-    Input.mouseDown = 1
   }
 })
 
-window.addEventListener('mousemove', updateMousePos)
-
-window.addEventListener('mouseup', e => {
-  updateMousePos(e)
-  if (e.button === 0) {
-    Input.mouseRelease = 1
-    Input.mouseDown = 0
+document.addEventListener('touchstart', e => {
+  if (usingMouse) {
+    return
   }
+
+  if (!touched) {
+    document.body.removeEventListener('mousemove', onMouseMove)
+  }
+
+  updateMousePos(e.changedTouches[0])
+  Input.mousePress = 1
 })
+
+document.body.addEventListener('mousemove', onMouseMove)

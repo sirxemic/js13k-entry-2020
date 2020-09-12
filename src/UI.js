@@ -94,7 +94,7 @@ export function updateUI () {
   scoreDisplay.innerHTML = makeSpanned(scoreString.padStart(8, '0'))
 
   const diff = score - displayedScore
-  scoreAddDisplay.innerHTML = diff > 0 ? makeSpanned('+' + diff) : ''
+  scoreAddDisplay.innerHTML = diff > 0 ? '+' + makeSpanned(''+diff) : ''
 
   const timeParts = time.toFixed(2).split('.')
   timeDisplay.innerHTML = makeSpanned(timeParts[0]) + '.' + makeSpanned(timeParts[1])

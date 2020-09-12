@@ -32,10 +32,9 @@ vec2 rotate(vec2 uv, float a) {
 
 float fbm(vec2 p, float t) {
   float f;
-  f  = 0.5    * noise(vec3(p, t)); p *= 2.1;
-  f += 0.25   * noise(vec3(p, t)); p *= 2.2;
-  f += 0.125  * noise(vec3(p, t)); p *= 2.3;
-  f += 0.0625 * noise(vec3(p, t));
+  f  = 0.55 * noise(vec3(p, t)); p *= 2.1;
+  f += 0.25 * noise(vec3(p, t)); p *= 2.2;
+  f += 0.15 * noise(vec3(p, t));
   return f;
 }
 
@@ -46,17 +45,8 @@ vec3 stars(vec3 dir) {
             (n.y > n.x && n.y > n.z) ? dir.zx / dir.y :
                                         dir.xy / dir.z;
 
-  float f = 0.0;
-
-  for (int i = 0 ; i < 3; i++) {
-    uv = rotate( 1.07 * uv + vec2( 0.7 ), 0.5 );
-
-    float t = 10. * uv.x * uv.y;
-    vec2 u = cos(100. * uv) * fbm(20. * uv, 0.0);
-    f += smoothstep(0.5, 0.55, u.x * u.y) * (0.25 * sin(t) + 0.75);
-  }
-
-  return f * vec3(1.0, 0.7, 0.5);
+  vec2 u = cos(200. * uv) * fbm(50. * uv, 0.0);
+  return smoothstep(0.53, 0.55, u.x * u.y) * (0.25 * sin(uv.x * uv.y) + 0.75) * vec3(1.0, 0.7, 0.5);
 }
 
 vec3 bg(vec3 dir) {
