@@ -44,7 +44,8 @@ const closureCompilerPlugin = {
 
 const replaceEnvs = {
   transformBundle (code) {
-    return code.replace(/process.env.NODE_ENV/g, '"production"')
+    // Nasty, but works for now and is better than just replacing "process.env.NODE_ENV"
+    return code.replace(/\bif\s*\(process.env.NODE_ENV[^}]+\}/g, '')
   }
 }
 

@@ -3,9 +3,7 @@ import { score, time, delta, lives, updateShowTutorial, showTutorial, updateCasu
 import { classNames } from './classNames'
 
 if (process.env.NODE_ENV === 'development') {
-  for (let key in classNames) {
-    classNames[key] = key
-  }
+  for (let key in classNames) classNames[key] = key
 }
 
 function getElement (name) {

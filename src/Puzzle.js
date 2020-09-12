@@ -17,7 +17,7 @@ import { SHAPE_SIZE, DISTANCE_FROM_CAMERA, FOVX } from './constants'
 import { delta } from './globals'
 import { smoothstep } from './utils'
 import { playSample } from './Audio'
-import { RotateSound } from './Assets'
+import { ReverseRotateSound, RotateSound } from './Assets'
 
 const UNDO = 1
 
@@ -154,7 +154,7 @@ export class Puzzle extends Transform3D {
         this.moves.push(action)
       }
       this.executionCoroutine = action.execute(true, isUndo)
-      playSample(RotateSound, 1, true)
+      playSample(isUndo ? ReverseRotateSound : RotateSound, 1, true)
     }
   }
 

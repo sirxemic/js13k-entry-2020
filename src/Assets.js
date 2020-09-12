@@ -1,6 +1,6 @@
 import { waitForNextFrame } from './utils'
 import { TheAudioContext, setReverbDestination, contextSampleRate } from './Audio/Context'
-import { createRotateSound } from './Audio/Samples/Rotate'
+import { createRotateSound, createReverseRotateSound } from './Audio/Samples/Rotate'
 import { createSuccessJingle, createWinJingle } from './Audio/Samples/SuccessJingle'
 import createMainSong from './Audio/MainSong'
 import { createAudioBuffer } from './Audio/SoundGeneration'
@@ -10,6 +10,7 @@ import { createFailSound } from './Audio/Samples/Fail'
 export let MainSong
 
 export let RotateSound = createAudioBuffer(createRotateSound)
+export let ReverseRotateSound = createAudioBuffer(createReverseRotateSound)
 export let SuccessJingle = createAudioBuffer(createSuccessJingle)
 export let WinJingle = createAudioBuffer(createWinJingle)
 export let FailSound = createAudioBuffer(createFailSound)
@@ -32,6 +33,7 @@ export async function loadAssets () {
   await Promise.all(
     [
       RotateSound,
+      ReverseRotateSound,
       SuccessJingle,
       WinJingle,
       FailSound

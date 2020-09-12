@@ -16,3 +16,9 @@ export function createRotateSound () {
     3
   )
 }
+
+export function createReverseRotateSound () {
+  const result = createRotateSound()
+  result.reverse()
+  return result
+}
