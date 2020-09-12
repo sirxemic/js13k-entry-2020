@@ -3,6 +3,9 @@
 <head>
 <title>404</title>
 <style>
+* {
+  transition: opacity 0.2s ease;
+}
 body {
   position: relative;
   height: 100vh;
@@ -25,13 +28,9 @@ canvas {
   bottom: 0;
 }
 
-.ui {
+.ui:not(.clickable) {
   position: absolute;
   pointer-events: none;
-}
-
-.ui > div {
-  position: absolute;
 }
 
 .levelLabel {
@@ -44,55 +43,57 @@ canvas {
   right: 0.2em;
   text-align: right;
 }
-.livesDiv {
-  top: 2.6em;
-  right: 0.2em;
-  text-align: right;
-}
 .scoreDiv {
   bottom: 0.2em;
   left: 0.2em;
+  text-align: left;
 }
-
-.mainMenu {
-  position: absolute;
-  top: 65%;
+.livesText {
+  margin-bottom: 0.2em;
+}
+.movesDiv {
+  bottom: 0.2em;
   left: 0;
   right: 0;
   text-align: center;
 }
-
-.finalScoreDiv {
+.undoButton {
   position: absolute;
-  left: 50%;
-  top: 55%;
+  padding: 0.2em;
+  text-align: right;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.finalScoreScreen {
   font-size: 1.5em;
-  transform: translate(-50%, 0);
-  text-align: center;
   pointer-events: none;
 }
 
-.ui, .mainMenu, .finalScoreDiv {
-  opacity: 0;
-  transition: opacity 0.2s ease;
-}
-
-.stateMainMenu .mainMenu,
-.stateTutorial .ui,
-.statePlaying .ui,
-.stateEnd .finalScoreDiv {
-  opacity: 1;
-}
-
-.statePlaying .mainMenu,
-.stateTutorial .mainMenu {
+.screen {
   display: none;
+  opacity: 0;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(75% - 1em);
+  text-align: center;
 }
 
-.stateTutorial .dynamic,
+.mainUi {
+  top: 0;
+  bottom: 0;
+}
+
+.stateTutorial .stat,
 .scoreAddText, .info {
   opacity: 0.4;
   text-shadow: none;
+}
+
+.stateCasualMode .stat {
+  display: none;
 }
 
 .glyph {
@@ -136,18 +137,33 @@ canvas {
 }
 </style>
 </head>
-<body class="stateStart">
+<body>
   <canvas></canvas>
-  <div class="ui levelLabel"></div>
-  <div class="ui scoreDiv dynamic"><span class="metricLabel">SCORE</span><span class="scoreText"></span><span class="scoreAddText"></span></div>
-  <div class="ui timeDiv dynamic"><span class="metricLabel">TIME</span><span class="timeText"></span></div>
-  <div class="ui livesDiv dynamic"><span class="metricLabel">LIVES</span><span class="livesText">5</span></div>
-  <div class="finalScoreDiv"><span class="metricLabel">FINAL SCORE</span></div>
-  <div class="mainMenu">
+
+  <div class="screen mainUi">
+    <div class="ui levelLabel"></div>
+    <div class="ui scoreDiv stat">
+      <div class="metricLabel">LIVES</div>
+      <div class="livesText">5</div>
+      <div class="metricLabel">SCORE</div>
+      <span class="scoreText"></span><span class="scoreAddText"></span>
+    </div>
+    <div class="ui timeDiv stat"><span class="metricLabel">TIME</span><span class="timeText"></span></div>
+    <div class="ui movesDiv"></div>
+    <div class="ui undoButton clickable">UNDO [Z]</div>
+  </div>
+
+  <div class="screen finalScoreScreen">
+    <span class="metricLabel">FINAL SCORE</span>
+  </div>
+
+  <div class="screen casualEndScreen">YOU BEAT ALL LEVELS!<br>CONGRATS!</div>
+
+  <div class="screen mainMenu">
     <div class="clickable startButton">START</div>
     <div class="clickable selectedOption option tutorialOption">SHOW TUTORIAL</div>
     <div class="clickable option highscoreOption">CASUAL MODE</div>
-    <div class="info">There will be no time limit, but you also won't be scored</div>
+    <div class="info">There won't be a time limit, but you also won't be scored.</div>
   </div>
   <script src="build.js"></script>
 </body>

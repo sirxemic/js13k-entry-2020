@@ -49,10 +49,8 @@ export class Song {
   tapeStop (time = 1) {
     this.channels.forEach(channel => {
       channel.source.playbackRate.setValueAtTime(1, TheAudioContext.currentTime)
-      channel.source.playbackRate.linearRampToValueAtTime(0.0001, TheAudioContext.currentTime + time)
+      channel.source.playbackRate.linearRampToValueAtTime(0.001, TheAudioContext.currentTime + time)
     })
-
-    setTimeout(() => this.stop(), time * 1000)
   }
 
   play () {

@@ -19,11 +19,18 @@ import { smoothstep } from './utils'
 import { playSample } from './Audio'
 import { RotateSound } from './Assets'
 
+const UNDO = 1
+
 export class Puzzle extends Transform3D {
   constructor (level) {
     super()
 
     this.trackPosition = -Math.PI
+
+    this.moves = []
+    this.bufferedMoves = []
+
+    this.showUndo = false
 
     // Falsy initializations can be removed to save space
     // this.isActive = false
@@ -42,6 +49,9 @@ export class Puzzle extends Transform3D {
   }
 
   parse (level) {
+    this.maxMoves = level.maxMoves
+    this.timeLimit = level.timeLimit
+
     this.size = (level.shapes.length - 1) / 2
     this.tiles = []
     for (let i = 0; i < level.shapes.length; i++) {
@@ -103,6 +113,7 @@ export class Puzzle extends Transform3D {
   }
 
   checkState () {
+    this.showUndo = this.moves.length > 0
     for (let tile of this.tiles) {
       if (!tile.hasMirroredTile()) return
     }
@@ -120,31 +131,48 @@ export class Puzzle extends Transform3D {
       action.hover = false
     }
 
-    if (hoverAction) {
+    if (this.moves.length < this.maxMoves && hoverAction) {
       document.body.style.cursor = 'pointer'
       hoverAction.hover = true
 
-      if (Input.mousePress || this.bufferedClick) {
-        if (this.executionCoroutine) {
-          this.bufferedClick = true
-        } else {
-          this.bufferedClick = false
-          this.executionCoroutine = hoverAction.execute()
-          playSample(RotateSound, 1, true)
-        }
+      if (Input.mousePress) {
+        this.bufferedMoves.push(hoverAction)
       }
     }
+
+    if (!this.executionCoroutine ) {
+      let action = this.bufferedMoves.shift()
+      if (!action) return
+
+      let isUndo = action === UNDO
+      if (isUndo) {
+        action = this.moves.pop()
+        if (!action) {
+          return
+        }
+      } else {
+        this.moves.push(action)
+      }
+      this.executionCoroutine = action.execute(true, isUndo)
+      playSample(RotateSound, 1, true)
+    }
+  }
+
+  undo () {
+    this.bufferedMoves.push(UNDO)
   }
 
   setDone () {
     this.isDone = true
     this.endStep = 0
+    this.showUndo = false
   }
 
   setFailed () {
     TheCamera.shake()
     this.failed = true
     this.endStep = 0
+    this.showUndo = false
   }
 
   stop () {

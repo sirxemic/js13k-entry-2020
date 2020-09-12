@@ -14,7 +14,9 @@ export const mediumLevels = [
       [RotateCWAction, -1],
       [FlipHAction, 1],
       [SwapAction, -1, 2],
-    ]
+    ],
+    maxMoves: 5,
+    timeLimit: 30
   },
   {
     shapes: [FourShape, FourShape, TriangleShape, CircleShape, TriangleShape],
@@ -23,26 +25,8 @@ export const mediumLevels = [
       [SwapAction, 0, 1, 1],
       [SwapAction, -1, 0],
       [SwapAction, -2, -1, 1]
-    ]
+    ],
+    maxMoves: 3,
+    timeLimit: 30
   },
-  {
-    shapes: [FourShape, TriangleShape, TriangleShape, FourShape, CircleShape],
-    orientations: [O1, O1, [1, 0, 0, -1], [1, 0, 0, -1], O1],
-    actions: [
-      [RotateCCWAction, 0],
-      [ShiftAction, -3]
-    ]
-  },
-  {
-    shapes: [FourShape, FourShape, FourShape, FourShape, FourShape, FourShape, CircleShape],
-    orientations: [O1, [1, 0, 0, -1], [-1, 0, 0, 1], [0, 1, 1, 0], [0, 1, -1, 0], [0, -1, -1, 0], O1],
-    actions: [
-      [FlipVAction, -3],
-      [RotateCCWAction, -1],
-      [RotateCWAction, 1],
-      [FlipHAction, 3],
-      [ShiftAction, -4],
-      [ShiftAction, 4]
-    ]
-  }
 ]

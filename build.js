@@ -67,9 +67,9 @@ const transformGlConsts = {
 // it actually does mangle them.
 const preMangle = {
   transformBundle (code) {
-    // TODO
     return code
-      .replace(/orientation/g, 'mOrientation')
+      .replace(/\borientation/g, 'mOrientation')
+      .replace(/\bactions/g, 'mActions')
   }
 }
 
@@ -93,6 +93,7 @@ function minifyMore (code) {
   return code
     .replace(/\["(\w+)"\]:/g, (g0, g1) => g1 + ':')
     .replace(/\[(\d+)\]:/g, (g0, g1) => g1 + ':')
+    .replace(/window\.localStorage/g, 'localStorage')
 }
 
 const postCCMinify = {

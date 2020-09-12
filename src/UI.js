@@ -18,21 +18,50 @@ const scoreAddDisplay = getElement(classNames.scoreAddText)
 const timeDisplay = getElement(classNames.timeText)
 const levelDisplay = getElement(classNames.levelLabel)
 const livesDisplay = getElement(classNames.livesText)
-const finalScoreDiv = getElement(classNames.finalScoreDiv)
+const movesDiv = getElement(classNames.movesDiv)
 const tutorialOption = getElement(classNames.tutorialOption)
 const highscoreOption = getElement(classNames.highscoreOption)
+const undoButton = getElement(classNames.undoButton)
+
+const mainUi = getElement(classNames.mainUi)
+const finalScoreScreen = getElement(classNames.finalScoreScreen)
+const casualEndScreen = getElement(classNames.casualEndScreen)
+const mainMenu = getElement(classNames.mainMenu)
+
+function toggleElement (element, show) {
+  if (element._show === show) return
+  element._show = show
+  if (show) {
+    element.style.display = 'block'
+    element.style.opacity = 0
+    setTimeout(() => element.style.opacity = 1, 0)
+  } else {
+    element.style.display = 'block'
+    element.style.opacity = 0
+    setTimeout(() => element.style.display = 'none', 200)
+  }
+}
+
+function setScreen (newScreen) {
+  [mainUi, finalScoreScreen, casualEndScreen, mainMenu].forEach(screen => toggleElement(screen, screen === newScreen))
+}
+
+function updateStartState () {
+  tutorialOption.classList.toggle(classNames.selectedOption, showTutorial)
+  highscoreOption.classList.toggle(classNames.selectedOption, casualMode)
+  document.body.classList.toggle(classNames.stateCasualMode, casualMode)
+}
 
 tutorialOption.onclick = () => {
   updateShowTutorial()
-  tutorialOption.classList.toggle(classNames.selectedOption, showTutorial)
+  updateStartState()
 }
 highscoreOption.onclick = () => {
   updateCasualMode()
-  highscoreOption.classList.toggle(classNames.selectedOption, casualMode)
-  document.querySelectorAll('.' + classNames.dynamic).forEach(el => {
-    el.style.display = casualMode ? 'none' : 'block'
-  })
+  updateStartState()
 }
+
+updateStartState()
 
 function getDigitStyle () {
   const canvas = document.createElement('canvas')
@@ -53,11 +82,8 @@ function makeSpanned (n) {
 }
 
 export function updateLevelDisplay (levelIndex) {
-  if (isTutorialLevel(levelIndex)) {
-    document.body.className = classNames.stateTutorial
-  } else {
-    document.body.className = classNames.statePlaying
-  }
+  setScreen(mainUi)
+  document.body.classList.toggle(classNames.stateTutorial, isTutorialLevel(levelIndex))
   levelDisplay.textContent = getLevelLabel(levelIndex)
 }
 
@@ -79,11 +105,34 @@ export function updateUI () {
 }
 
 export function showStart (callback) {
-  document.body.className = classNames.stateMainMenu
-  startButton.addEventListener('click', callback)
+  setScreen(mainMenu)
+  startButton.onclick = callback
 }
 
 export function showFinalScore () {
-  document.body.className = classNames.stateEnd
-  finalScoreDiv.appendChild(scoreDisplay)
+  setScreen(finalScoreScreen)
+  finalScoreScreen.appendChild(scoreDisplay)
+}
+
+export function showEndCard () {
+  setScreen(casualEndScreen)
+}
+
+export function toggleMovesLeft (show) {
+  toggleElement(movesDiv, show)
+}
+
+export function updateMovesLeft (amount) {
+  movesDiv.textContent = amount === 1 ? '1 MOVE LEFT' : `${amount} MOVES LEFT`
+}
+
+export function bindUndo (callback) {
+  undoButton.onclick = callback
+  document.onkeypress = (e) => {
+    if (e.key === 'z') callback()
+  }
+}
+
+export function toggleUndoButton (show) {
+  toggleElement(undoButton, show)
 }

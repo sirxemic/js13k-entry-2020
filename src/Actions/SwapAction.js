@@ -31,7 +31,7 @@ export class SwapAction extends Action {
     this.matrix.setTranslation(this.mid, 0, -0.25)
   }
 
-  *execute (animate = true) {
+  *execute (animate = true, reverse = false) {
     const tile1 = this.puzzle.getTile(this.position1)
     const tile2 = this.puzzle.getTile(this.position2)
 
@@ -41,7 +41,7 @@ export class SwapAction extends Action {
     if (animate) {
       let t = 0
       while (t < ACTION_DURATION) {
-        const a = elastic(t / ACTION_DURATION) * Math.PI
+        const a = elastic(t / ACTION_DURATION) * Math.PI * (reverse ? -1 : 1)
         const t1X = this.mid - this.span * Math.cos(a)
         const t1Y = -this.span * Math.sin(a)
         const t2X = this.mid + this.span * Math.cos(a)

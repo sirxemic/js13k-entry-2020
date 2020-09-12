@@ -17,12 +17,12 @@ import {
   lives, removeLife,
   showTutorial, casualMode
 } from './globals'
-import { TIME_LIMIT } from './constants'
-import { updateUI, updateLevelDisplay, showStart, showFinalScore } from './UI'
+import { updateUI, updateLevelDisplay, showStart, showFinalScore, bindUndo, toggleMovesLeft, updateMovesLeft, toggleUndoButton, showEndCard } from './UI'
 import { loadAssets, MainSong, SuccessJingle, FailSound, WinJingle } from './Assets'
 import { TheAudioContext } from './Audio/Context'
 import { playSample } from './Audio'
 import { clamp } from './utils'
+import { loadProgress, saveProgress } from './Progress'
 
 function resizeCanvas () {
   TheCanvas.width = window.innerWidth
@@ -37,7 +37,7 @@ let currentPuzzle = new Puzzle(startScreen)
 let nextPuzzle
 let transitionTime = 0
 
-const STATE_INIT = 0
+const STATE_INIT = 7
 const STATE_START_SCREEN = 1
 const STATE_PLAYING = 2
 const STATE_SOLVE_TRANSITION = 3
@@ -58,6 +58,10 @@ function onTransitionEnd () {
   }
 }
 
+bindUndo(() => {
+  if (currentPuzzle.isActive) currentPuzzle.undo()
+})
+
 const gameFSM = new FSM({
   [STATE_INIT]: {
     execute () {
@@ -75,7 +79,12 @@ const gameFSM = new FSM({
         await TheAudioContext.resume()
         MainSong.play()
         currentPuzzle.isActive = false
-        const newLevelIndex = showTutorial ? 0 : tutorialCount
+        let newLevelIndex
+        if (casualMode) {
+          newLevelIndex = loadProgress() || (showTutorial ? 0 : tutorialCount)
+        } else {
+          newLevelIndex = showTutorial ? 0 : tutorialCount
+        }
         setLevelIndex(newLevelIndex)
         currentPuzzle = new Puzzle(levels[newLevelIndex])
         nextPuzzle = new Puzzle(levels[newLevelIndex + 1])
@@ -90,27 +99,36 @@ const gameFSM = new FSM({
 
   [STATE_PLAYING]: {
     enter () {
+      if (casualMode) saveProgress(levelIndex)
       updateLevelDisplay(levelIndex)
 
       currentPuzzle.trackPosition = 0
       currentPuzzle.isActive = true
-      setTime(TIME_LIMIT)
+      setTime(currentPuzzle.timeLimit)
+
+      toggleMovesLeft(true)
     },
 
     execute () {
       if (currentPuzzle.isDone) {
         gameFSM.setState(STATE_SOLVE_TRANSITION)
       } else if (!casualMode && !isTutorialLevel(levelIndex)) {
-        const x = (TIME_LIMIT - time) / TIME_LIMIT
+        const x = (currentPuzzle.timeLimit - time) / currentPuzzle.timeLimit
         if (nextPuzzle) {
           nextPuzzle.trackPosition = -Math.PI + Math.PI * x ** 0.25
         }
         updateTime(delta)
         if (time <= 0) {
           setTime(0)
-          gameFSM.setState(STATE_FAIL_TRANSITION)
+          return gameFSM.setState(STATE_FAIL_TRANSITION)
         }
       }
+      updateMovesLeft(currentPuzzle.maxMoves - currentPuzzle.moves.length)
+      toggleUndoButton(currentPuzzle.showUndo)
+    },
+
+    leave () {
+      toggleMovesLeft(false)
     }
   },
 
@@ -155,8 +173,13 @@ const gameFSM = new FSM({
 
   [STATE_FINISH]: {
     enter () {
+      if (casualMode) {
+        saveProgress(0)
+        showEndCard()
+      } else {
+        showFinalScore()
+      }
       playSample(WinJingle, 1, true)
-      showFinalScore()
     }
   },
 

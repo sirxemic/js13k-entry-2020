@@ -3,7 +3,7 @@ import { tutorialLevels } from './tutorials'
 import { easyLevels } from './easy'
 import { mediumLevels } from './medium'
 import { hardLevels } from './hard'
-import { randomizeLevel, O1 } from './levelUtils'
+import { O1 } from './levelUtils'
 
 const bookend = {
   shapes: [FourShape, CircleShape, FourShape],
@@ -17,9 +17,9 @@ export const tutorialCount = tutorialLevels.length
 
 export const levels = [
   ...tutorialLevels,
-  ...easyLevels.map(randomizeLevel),
-  ...mediumLevels.map(randomizeLevel),
-  ...hardLevels.map(randomizeLevel),
+  ...easyLevels,
+  ...mediumLevels,
+  ...hardLevels,
   bookend
 ]
 

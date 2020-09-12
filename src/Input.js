@@ -19,7 +19,7 @@ function updateMousePos (e) {
   Input.y = (TheCanvas.height / 2 - e.y) * Input.scale
 }
 
-TheCanvas.addEventListener('mousedown', e => {
+window.addEventListener('mousedown', e => {
   updateMousePos(e)
   if (e.button === 0) {
     Input.mousePress = 1
@@ -27,9 +27,9 @@ TheCanvas.addEventListener('mousedown', e => {
   }
 })
 
-TheCanvas.addEventListener('mousemove', updateMousePos)
+window.addEventListener('mousemove', updateMousePos)
 
-TheCanvas.addEventListener('mouseup', e => {
+window.addEventListener('mouseup', e => {
   updateMousePos(e)
   if (e.button === 0) {
     Input.mouseRelease = 1

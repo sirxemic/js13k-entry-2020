@@ -9,12 +9,12 @@ const rotationMatrix = tempMatrix4
 class RotateAction extends SimpleAction {
   constructor (puzzle, position, direction) {
     super(puzzle, position, RotateGeometry)
-    this.direction = direction
+    this.rotateDirection = direction
     this.matrix.els[0] = direction
   }
 
   *execute (animate = true, reverse = false) {
-    const direction = reverse ? -this.direction : this.direction
+    const direction = reverse ? -this.rotateDirection : this.rotateDirection
     const tile = this.puzzle.getTile(this.position)
     if (animate) {
       const rotationMatrixFrom = tile.matrix.clone()

@@ -19,7 +19,7 @@ export function randomizeLevel (level) {
       ]
     }
   }
-  switch (0) {
+  switch (pick(0,1,2,3)) {
     case 0:
       // Flip 180 degrees
       level.shapes.reverse()
