@@ -1,9 +1,8 @@
 import { Transform3D } from './Transform3D'
 import { TILE_SIZE } from './constants'
-import { gl } from './Graphics'
 import { TheShapeShader } from './Shaders/ShapeShader'
 import { U_MODELMATRIX, U_COLOR, U_ACTIVE, U_TIME } from './sharedLiterals'
-import { FourShape, TriangleShape } from './Geometries/Shapes'
+import { FourShape, TriangleShape, UShape } from './Geometries/Shapes'
 
 export class Tile extends Transform3D {
   constructor (puzzle, shape, position, orientation) {
@@ -29,6 +28,8 @@ export class Tile extends Transform3D {
         return a1 === -a2 && c1 === -c2 && b1 === b2 && d1 === d2
       case TriangleShape:
         return b1 - d1 === b2 - d2 && a1 - c1 === c2 - a2
+      case UShape:
+        return c1 === -c2 && d1 === d2
       default:
         return true
     }

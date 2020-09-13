@@ -1,9 +1,7 @@
-import { FourShape, CircleShape } from '../Geometries/Shapes'
-import { tutorialLevels } from './tutorials'
-import { easyLevels } from './easy'
-import { mediumLevels } from './medium'
-import { hardLevels } from './hard'
-import { O1 } from './levelUtils'
+import { FourShape, CircleShape } from './Geometries/Shapes'
+import { tutorialLevels } from './Levels/tutorials'
+import { mainLevels } from './Levels/main'
+import { O1 } from './Levels/levelUtils'
 
 const bookend = {
   shapes: [FourShape, CircleShape, FourShape],
@@ -17,9 +15,7 @@ export const tutorialCount = tutorialLevels.length
 
 export const levels = [
   ...tutorialLevels,
-  ...easyLevels,
-  ...mediumLevels,
-  ...hardLevels,
+  ...mainLevels,
   bookend
 ]
 

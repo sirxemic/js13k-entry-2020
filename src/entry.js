@@ -7,7 +7,7 @@ import { gl, TheCanvas } from './Graphics'
 import { Input } from './Input'
 import { BackgroundGeometry } from './Geometries/BackgroundGeometry'
 import { warpRenderTarget } from './RenderTarget'
-import { levels, tutorialCount, startScreen, isTutorialLevel } from './Levels/levels'
+import { levels, tutorialCount, startScreen, isTutorialLevel } from './levelsEntry'
 import { FSM } from './FSM'
 import {
   delta, setDelta,

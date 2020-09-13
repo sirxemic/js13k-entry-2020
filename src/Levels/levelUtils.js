@@ -3,6 +3,8 @@ import { pick } from '../utils'
 import { RotateCWAction, RotateCCWAction } from '../Actions/RotateAction'
 
 export const O1 = [1, 0, 0, 1]
+export const H1 = [-1, 0, 0, 1]
+export const V1 = [1, 0, 0, -1]
 
 export function randomizeLevel (level) {
   const e1 = pick(1, -1)

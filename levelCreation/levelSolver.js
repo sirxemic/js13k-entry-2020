@@ -1,6 +1,7 @@
 const {
   SHAPE_FOUR,
   SHAPE_TRIANGLE,
+  SHAPE_U,
   applyAction,
   serializeSequence
 } = require('./utils')
@@ -20,6 +21,9 @@ function isSymmetric (level) {
       case SHAPE_TRIANGLE:
         if (!(b1 - d1 === b2 - d2 && a1 - c1 === c2 - a2)) return false
         break
+      case SHAPE_U:
+        if (!(c1 === -c2 && d1 === d2)) return false
+        break
     }
   }
   return true
@@ -27,14 +31,15 @@ function isSymmetric (level) {
 
 function solve (level, maxMoveCount, moveCount = 0, history = []) {
   if (isSymmetric(level)) {
-    return moveCount
+    return [moveCount, history]
   }
 
   if (moveCount === maxMoveCount) {
-    return -1
+    return [-1]
   }
 
   let bestMoveCount = -1
+  let bestMoveHistory = null
 
   const levelBeforeAction = serializeSequence(level)
   for (let action of level.actions) {
@@ -46,14 +51,15 @@ function solve (level, maxMoveCount, moveCount = 0, history = []) {
       continue
     }
 
-    let result = solve(level, maxMoveCount, moveCount + 1, history.concat([levelBeforeAction]))
+    let [result, bestHistory] = solve(level, maxMoveCount, moveCount + 1, history.concat([levelBeforeAction]))
     if (result !== -1 && (bestMoveCount === -1 || result < bestMoveCount)) {
       bestMoveCount = result
+      bestMoveHistory = bestHistory
     }
     applyAction(level, action, true)
   }
 
-  return bestMoveCount
+  return [bestMoveCount, bestMoveHistory]
 }
 
 module.exports = {

@@ -1,6 +1,7 @@
 const SHAPE_FOUR = 'FourShape'
 const SHAPE_TRIANGLE = 'TriangleShape'
 const SHAPE_CIRCLE = 'CircleShape'
+const SHAPE_U = 'UShape'
 
 const ACTION_FLIPH = 'FlipHAction'
 const ACTION_FLIPV = 'FlipVAction'
@@ -123,6 +124,7 @@ module.exports = {
   SHAPE_FOUR,
   SHAPE_TRIANGLE,
   SHAPE_CIRCLE,
+  SHAPE_U,
   ACTION_FLIPH,
   ACTION_FLIPV,
   ACTION_ROTATECW,

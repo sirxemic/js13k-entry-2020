@@ -139,7 +139,7 @@ canvas {
 @media (max-aspect-ratio: 1/1) {
   .mainMenu::before {
     content: 'Rotate your screen for a better experience';
-    margin: -1em 0 1em;
+    margin: -2em 0 1em;
     display: block;
   }
 }
@@ -163,14 +163,14 @@ canvas {
   </div>
 
   <div class="screen finalScoreScreen">
-    <span class="metricLabel">FINAL SCORE</span>
+    <div style="margin:-2em 0 1em">GAME OVER</div><span class="metricLabel">FINAL SCORE</span>
   </div>
 
   <div class="screen casualEndScreen">YOU BEAT ALL LEVELS!<br>CONGRATS!</div>
 
   <div class="screen mainMenu">
     <div class="clickable startButton">START</div>
-    <div class="clickable selectedOption option tutorialOption">SHOW TUTORIAL</div>
+    <div class="clickable option tutorialOption">SHOW TUTORIAL</div>
     <div class="clickable option highscoreOption">CASUAL MODE</div>
     <div class="info">There won't be a time limit, but you also won't be scored.</div>
   </div>

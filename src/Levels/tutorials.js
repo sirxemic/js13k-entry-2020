@@ -1,4 +1,4 @@
-import { TriangleShape, CircleShape, FourShape } from '../Geometries/Shapes'
+import { TriangleShape, CircleShape, FourShape, UShape } from '../Geometries/Shapes'
 import { RotateCWAction, RotateCCWAction } from '../Actions/RotateAction'
 import { FlipHAction } from '../Actions/FlipHAction'
 import { SwapAction } from '../Actions/SwapAction'
@@ -19,7 +19,7 @@ export const tutorialLevels = [
     shapes: [FourShape, CircleShape, FourShape],
     orientations: [O1, O1, [-1, 0, 0, -1]],
     actions: [
-      [FlipVAction, 1]
+      [FlipVAction, -1]
     ],
     maxMoves: 1
   },
@@ -41,22 +41,30 @@ export const tutorialLevels = [
     maxMoves: 2
   },
   {
-    shapes: [TriangleShape, CircleShape, TriangleShape],
-    orientations: [[0, 1, -1, 0], O1, [0, 1, -1, 0]],
+    shapes: [CircleShape, UShape, UShape],
+    orientations: [O1, [0, 1, -1, 0], [0, 1, -1, 0]],
     actions: [
       [FlipHAction, 0],
-      [ShiftAction, -2],
       [ShiftAction, 2],
     ],
-    maxMoves: 3
+    maxMoves: 2
   },
   {
-    shapes: [FourShape, TriangleShape, CircleShape, TriangleShape, FourShape],
-    orientations: [O1, O1, O1, O1, [0, -1, -1, 0]],
+    shapes: [TriangleShape, TriangleShape, CircleShape],
+    orientations: [[0, 1, -1, 0], [0, 1, -1, 0], O1],
+    actions: [
+      [FlipHAction, 1],
+      [ShiftAction, -2],
+    ],
+    maxMoves: 2
+  },
+  {
+    shapes: [UShape, TriangleShape, CircleShape, TriangleShape, UShape],
+    orientations: [[0, -1, 1, 0], [-1, 0, 0, 1], O1, O1, [-1, 0, 0, 1]],
     actions: [
       [RotateCCWAction, -1],
-      [RotateCWAction, -2]
+      [SwapAction, -1, 2, 1]
     ],
-    maxMoves: 4
+    maxMoves: 3
   }
 ]

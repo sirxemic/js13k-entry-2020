@@ -1,4 +1,4 @@
-import { isTutorialLevel, getLevelLabel } from './Levels/levels'
+import { isTutorialLevel, getLevelLabel } from './levelsEntry'
 import { score, time, delta, lives, updateShowTutorial, showTutorial, updateCasualMode, casualMode } from './globals'
 import { classNames } from './classNames'
 

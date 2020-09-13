@@ -2,6 +2,7 @@ const {
   SHAPE_FOUR,
   SHAPE_TRIANGLE,
   SHAPE_CIRCLE,
+  SHAPE_U,
   ACTION_FLIPH,
   ACTION_FLIPV,
   ACTION_ROTATECW,
@@ -27,7 +28,7 @@ function createShapeSequence (n) {
   let shapesLeft = []
   const orientationsLeft = []
   for (let i = 0; i < n; i++) {
-    shapesLeft.push(pick(SHAPE_TRIANGLE, SHAPE_FOUR))
+    shapesLeft.push(pick(SHAPE_TRIANGLE, SHAPE_FOUR, SHAPE_U))
     orientationsLeft.push(randomOrientation())
   }
 
@@ -60,11 +61,11 @@ function createActions (n, m) {
 
   function getRandomAction () {
     const c = Math.random()
-    if (c < 1/8) return [ACTION_FLIPH, getRandomPosition()]
-    if (c < 2/8) return [ACTION_FLIPV, getRandomPosition()]
-    if (c < 3/8) return [ACTION_ROTATECCW, getRandomPosition()]
-    if (c < 4/8) return [ACTION_ROTATECW, getRandomPosition()]
-    if (c < 5/8) return [ACTION_SWAP, ...getRandomPositionPair()]
+    if (c < 0.1) return [ACTION_FLIPH, getRandomPosition()]
+    if (c < 0.2) return [ACTION_FLIPV, getRandomPosition()]
+    if (c < 0.3) return [ACTION_ROTATECCW, getRandomPosition()]
+    if (c < 0.4) return [ACTION_ROTATECW, getRandomPosition()]
+    if (c < 0.7) return [ACTION_SWAP, ...getRandomPositionPair()]
     return [ACTION_SHIFT, Math.floor(Math.random() * 2) * 2 - 1]
   }
 
@@ -78,7 +79,7 @@ function createActions (n, m) {
       case ACTION_SWAP:
         return (swapActions[action[1]] || 0) >= 2 || (swapActions[action[2]] || 0) >= 2
       case ACTION_SHIFT:
-        return shiftActions[action[1]]
+        return shiftActions[1] || shiftActions[-1]
     }
     throw new Error('wat?')
   }
@@ -119,6 +120,11 @@ function applyActions (level, moveCount, history = [], moveSequence = []) {
   }
 
   let possibleActions = [...level.actions]
+  // Temp: no consecutive shifts
+  if (moveSequence[moveSequence.length - 1] && moveSequence[moveSequence.length - 1][0] === ACTION_SHIFT) {
+    possibleActions.splice(possibleActions.indexOf(moveSequence[moveSequence.length - 1]), 1)
+  }
+  // End temp
   while (possibleActions.length > 0) {
     const levelBeforeAction = serializeSequence(level)
     const action = pick(...possibleActions)

@@ -7,7 +7,7 @@ import {
 } from '../SoundGeneration'
 
 const volumeEnvelope = [
-  [0, 0],
+  [0, 0, 1.2],
   [0.1, 0.15],
   [0.9, 0.15],
   [1, 0]

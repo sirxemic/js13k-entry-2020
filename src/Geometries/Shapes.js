@@ -73,6 +73,63 @@ export const FourShape = new Geometry({
   ]
 })
 
+export const UShape = new Geometry({
+  vertices: [
+    2, 2, 0,
+    1, 2, 0,
+    1, -1, 0,
+    -1, -1, 0,
+    -1, 2, 0,
+    -2, 2, 0,
+    -2, -2, 0,
+    2, -2, 0,
+
+    2 + OUTLINE_WIDTH, 2 + OUTLINE_WIDTH, 0,
+    1 - OUTLINE_WIDTH, 2 + OUTLINE_WIDTH, 0,
+    1 - OUTLINE_WIDTH, -1 + OUTLINE_WIDTH, 0,
+    -1 + OUTLINE_WIDTH, -1 + OUTLINE_WIDTH, 0,
+    -1 + OUTLINE_WIDTH, 2 + OUTLINE_WIDTH, 0,
+    -2 - OUTLINE_WIDTH, 2 + OUTLINE_WIDTH, 0,
+    -2 - OUTLINE_WIDTH, -2 - OUTLINE_WIDTH, 0,
+    2 + OUTLINE_WIDTH, -2 - OUTLINE_WIDTH, 0,
+  ],
+  normals: [
+    0, 0, 1,
+    0, 0, 1,
+    0, 0, 1,
+    0, 0, 1,
+    0, 0, 1,
+    0, 0, 1,
+    0, 0, 1,
+    0, 0, 1,
+    0, 0, 0,
+    0, 0, 0,
+    0, 0, 0,
+    0, 0, 0,
+    0, 0, 0,
+    0, 0, 0,
+    0, 0, 0,
+    0, 0, 0,
+  ],
+  indices: [
+    0, 1, 2,
+    0, 2, 7,
+    2, 6, 7,
+    2, 3, 6,
+    3, 4, 5,
+    3, 5, 6,
+
+     0,  8,  9, 0,  9, 1,
+     1,  9, 10, 1, 10, 2,
+     2, 10, 11, 2, 11, 3,
+     3, 11, 12, 3, 12, 4,
+     4, 12, 13, 4, 13, 5,
+     5, 13, 14, 5, 14, 6,
+     6, 14, 15, 6, 15, 7,
+     7, 15, 8, 7, 8, 0,
+  ]
+})
+
 const vertices = []
 const normals = []
 const indices = []

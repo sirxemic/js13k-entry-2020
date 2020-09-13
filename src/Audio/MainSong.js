@@ -237,8 +237,13 @@ async function createMelodyTrack () {
 
   await waitForNextFrame()
 
-  // Lead into chords section
-  addNotes([[20 * 4 - 0.5, -12]], output, createPluckSound, bpm)
+  // Some nice reverse sounds
+  const temp = createTempBuffer(2, bpm)
+  addNotes([[0, -12]], temp, createPluckSound, bpm)
+  temp.reverse()
+  output.set(temp, getOffsetForBeat(19 * 4 + 2, bpm))
+  output.set(temp, getOffsetForBeat(19 * 4 + 2 + 8, bpm))
+  output.set(temp, getOffsetForBeat(19 * 4 + 2 + 32, bpm))
 
   // Section 3
   addNotes(
@@ -315,7 +320,7 @@ export default async function createSong () {
     createBassTrack(),
     createHihatTrack(),
     createMelodyTrack()
-  ]) // wat
+  ])
 
   return new Song(
     [

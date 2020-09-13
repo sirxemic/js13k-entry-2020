@@ -46,7 +46,7 @@ export function createSuccessJingle () {
 }
 
 export function createWinJingle () {
-  const bpm = 900
+  const bpm = 700
   const measureCount = 8
   const trackBeatCount = measureCount * 4
   const notes = [
