@@ -88,7 +88,11 @@ export function updateLevelDisplay (levelIndex) {
 let animatedScore = 0
 
 export function updateUI () {
-  animatedScore += (score - animatedScore) * (1 - Math.exp(-8 * delta))
+  if (score > animatedScore) {
+    animatedScore += (score - animatedScore) * (1 - Math.exp(-8 * delta))
+  } else {
+    animatedScore = 0
+  }
   const displayedScore = Math.ceil(animatedScore)
   const scoreString = '' + displayedScore
   scoreDisplay.innerHTML = makeSpanned(scoreString.padStart(8, '0'))
@@ -104,14 +108,13 @@ export function updateUI () {
 
 export function showStart (callback) {
   setScreen(mainMenu)
+  scoreAddDisplay.parentElement.insertBefore(scoreDisplay, scoreAddDisplay)
   startButton.onclick = callback
 }
 
 export function showFinalScore (finish) {
   setScreen(finalScoreScreen)
-  if (finish) {
-    getElement(classNames.endText).textContent = 'THE END'
-  }
+  getElement(classNames.endText).textContent = finish ? 'THE END' : 'GAME OVER'
   finalScoreScreen.appendChild(scoreDisplay)
 }
 

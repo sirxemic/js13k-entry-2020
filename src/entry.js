@@ -15,7 +15,7 @@ import {
   addToScore,
   levelIndex, setLevelIndex,
   lives, removeLife,
-  showTutorial, casualMode
+  showTutorial, casualMode, resetScoreAndLives
 } from './globals'
 import { updateUI, updateLevelDisplay, showStart, showFinalScore, bindUndo, toggleMovesLeft, updateMovesLeft, toggleUndoButton, showEndCard } from './UI'
 import { loadAssets, MainSong, SuccessJingle, FailSound, WinJingle } from './Assets'
@@ -59,6 +59,12 @@ function onTransitionEnd () {
   }
 }
 
+function onEnd () {
+  if (Input.mousePress) {
+    gameFSM.setState(STATE_START_SCREEN)
+  }
+}
+
 bindUndo(() => {
   if (currentPuzzle.isActive) currentPuzzle.undo()
 })
@@ -78,7 +84,9 @@ const gameFSM = new FSM({
     enter () {
       showStart(async () => {
         await TheAudioContext.resume()
-        MainSong.play()
+        if (!MainSong.playing) {
+          MainSong.play()
+        }
         let newLevelIndex
         if (casualMode) {
           newLevelIndex = loadProgress() || (showTutorial ? 0 : tutorialCount)
@@ -86,6 +94,7 @@ const gameFSM = new FSM({
         } else {
           newLevelIndex = showTutorial ? 0 : tutorialCount
         }
+        resetScoreAndLives()
         setLevelIndex(newLevelIndex - 1)
         nextPuzzle = new Puzzle(levels[newLevelIndex])
         gameFSM.setState(STATE_START_SCREEN_TRANSITION)
@@ -129,9 +138,8 @@ const gameFSM = new FSM({
       if (currentPuzzle.isDone) {
         gameFSM.setState(STATE_SOLVE_TRANSITION)
       } else if (!casualMode && !isTutorialLevel(levelIndex)) {
-        const x = (currentPuzzle.timeLimit - time) / currentPuzzle.timeLimit
         if (nextPuzzle) {
-          nextPuzzle.trackPosition = -Math.PI + Math.PI * x ** 0.25
+          nextPuzzle.trackPosition = Math.PI * (1 - Math.min(30, time) / 30) ** 0.25 - Math.PI
         }
         updateTime(delta)
         if (time <= 0) {
@@ -196,7 +204,9 @@ const gameFSM = new FSM({
         showFinalScore(true)
       }
       playSample(WinJingle, 1, true)
-    }
+    },
+
+    execute: onEnd
   },
 
   [STATE_GAMEOVER]: {
@@ -208,6 +218,7 @@ const gameFSM = new FSM({
 
     execute () {
       TheCamera.velocity += (200 - TheCamera.velocity) * (1 - Math.exp(-0.5 * delta))
+      onEnd()
     }
   }
 }, STATE_INIT)

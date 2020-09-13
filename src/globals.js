@@ -25,6 +25,11 @@ export function removeLife () {
   lives--
 }
 
+export function resetScoreAndLives () {
+  score = 0
+  lives = 3
+}
+
 export let levelIndex = 0
 export function setLevelIndex (index) {
   levelIndex = index
