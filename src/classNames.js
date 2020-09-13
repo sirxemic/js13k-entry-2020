@@ -18,6 +18,7 @@ export const classNames = {
   glyph: 'q',
   stateTutorial: 'r',
   endText: 'z',
+  monetizationPopup: '_a',
 
   // Classes which are not used in JS:
   screen: 's',

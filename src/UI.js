@@ -1,5 +1,5 @@
 import { isTutorialLevel, getLevelLabel } from './levelsEntry'
-import { score, time, delta, lives, updateShowTutorial, showTutorial, updateCasualMode, casualMode } from './globals'
+import { score, time, delta, lives, updateShowTutorial, showTutorial, updateCasualMode, casualMode, slowDownTime } from './globals'
 import { classNames } from './classNames'
 
 if (process.env.NODE_ENV === 'development') {
@@ -136,4 +136,17 @@ export function bindUndo (callback) {
 
 export function toggleUndoButton (show) {
   toggleElement(undoButton, show)
+}
+
+function processMonetization () {
+  const el = getElement(classNames.monetizationPopup)
+  slowDownTime()
+  toggleElement(el, true)
+  setTimeout(() => {
+    toggleElement(el, false)
+  }, 7000)
+}
+
+if (document['monetization']) {
+  document['monetization'].addEventListener('monetizationstart', processMonetization)
 }

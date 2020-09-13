@@ -9,11 +9,15 @@ export function addToScore (add) {
 }
 
 export let time = 0
+let timeMultiplier = 1
 export function setTime (value) {
   time = value
 }
 export function updateTime (delta) {
-  time -= delta
+  time -= delta * timeMultiplier
+}
+export function slowDownTime () {
+  timeMultiplier = 0.5
 }
 
 export let lives = 3
