@@ -1,5 +1,5 @@
 import { waitForNextFrame } from './utils'
-import { TheAudioContext, setReverbDestination, contextSampleRate } from './Audio/Context'
+import { TheAudioContext, setReverbDestination } from './Audio/Context'
 import { createRotateSound, createReverseRotateSound } from './Audio/Samples/Rotate'
 import { createSuccessJingle, createWinJingle } from './Audio/Samples/SuccessJingle'
 import createMainSong from './Audio/MainSong'
@@ -8,37 +8,33 @@ import { createReverbIR } from './Audio/Samples/ReverbIR'
 import { createFailSound } from './Audio/Samples/Fail'
 
 export let MainSong
+export let RotateSound
+export let ReverseRotateSound
+export let SuccessJingle
+export let WinJingle
+export let FailSound
 
-export let RotateSound = createAudioBuffer(createRotateSound)
-export let ReverseRotateSound = createAudioBuffer(createReverseRotateSound)
-export let SuccessJingle = createAudioBuffer(createSuccessJingle)
-export let WinJingle = createAudioBuffer(createWinJingle)
-export let FailSound = createAudioBuffer(createFailSound)
-
-async function createReverb () {
+function createReverb () {
   const reverb = TheAudioContext.createConvolver()
-  const ir = createReverbIR()
-  const irBuffer = TheAudioContext.createBuffer(2, ir[0].length, contextSampleRate)
-  irBuffer.getChannelData(0).set(ir[0])
-  irBuffer.getChannelData(1).set(ir[1])
-
-  reverb.buffer = irBuffer
+  reverb.buffer = createAudioBuffer(createReverbIR())
 
   setReverbDestination(reverb)
-
-  await waitForNextFrame()
 }
 
 export async function loadAssets () {
-  await Promise.all(
-    [
-      RotateSound,
-      ReverseRotateSound,
-      SuccessJingle,
-      WinJingle,
-      FailSound
-    ]
-  )
+  RotateSound = createAudioBuffer(createRotateSound())
+  ReverseRotateSound = createAudioBuffer(createReverseRotateSound())
+
+  await waitForNextFrame()
+
+  SuccessJingle = createAudioBuffer(createSuccessJingle())
+  WinJingle = createAudioBuffer(createWinJingle())
+
+  await waitForNextFrame()
+
+  FailSound = createAudioBuffer(createFailSound())
+
+  await waitForNextFrame()
 
   await createReverb()
 

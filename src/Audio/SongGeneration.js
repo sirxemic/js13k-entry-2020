@@ -1,26 +1,14 @@
-import { TheAudioContext, TheAudioDestination, TheReverbDestination, contextSampleRate } from './Context'
-import { waitForNextFrame, EnvelopeSampler } from '../utils'
+import { contextSampleRate } from './Context'
+import { EnvelopeSampler } from '../utils'
 
-export function addSoundToBuffer (sourceData, targetData, offset, mono = false) {
-  if (!Array.isArray(sourceData)) {
-    sourceData = [sourceData]
-  }
+export function addSoundToBuffer (sourceDataBuffer, targetDataBuffer, offset, mono = false) {
+  const maxJ = Math.min(offset + sourceDataBuffer.length, targetDataBuffer.length)
 
-  if (!Array.isArray(targetData)) {
-    targetData = [targetData]
-  }
-
-  for (let i = 0; i < targetData.length; i++) {
-    const sourceDataBuffer = sourceData[i % sourceData.length]
-    const targetDataBuffer = targetData[i % targetData.length]
-
-    const maxJ = Math.min(offset + sourceDataBuffer.length, targetDataBuffer.length)
+  if (mono) {
+    targetDataBuffer.set(sourceDataBuffer.subarray(0, maxJ - offset), offset)
+  } else {
     for (let j = offset; j < maxJ; j++) {
-      targetDataBuffer[j] = (
-        mono
-        ? sourceDataBuffer[j - offset]
-        : targetDataBuffer[j] + sourceDataBuffer[j - offset]
-      )
+      targetDataBuffer[j] += sourceDataBuffer[j - offset]
     }
   }
 }
@@ -43,10 +31,12 @@ export function makeNotesFromBars (notes) {
   return result
 }
 
+const bufferCache = {}
+
 export function addNotes (notes, output, instrument, bpm, mono = false) {
-  const bufferCache = {}
+  const keyPrefix = instrument.toString().substr(0,20)
   notes.forEach(note => {
-    let key = note.slice(1).join('|')
+    let key = keyPrefix + note.slice(1).join('|')
     if (!bufferCache[key]) {
       bufferCache[key] = instrument(getFrequencyForTone(note[1]), getLengthInSeconds(note[2] || 1, bpm), ...note.slice(3))
     }
@@ -69,7 +59,11 @@ export function getSamplePositionWithinBeat (n, bpm) {
 }
 
 export function getOffsetForBeat (n, bpm) {
-  return Math.round(contextSampleRate * n * 60 / bpm)
+  return Math.floor(contextSampleRate * n * 60 / bpm)
+}
+
+export function getOffsetForBar (n, bpm) {
+  return getOffsetForBeat(n * 4, bpm)
 }
 
 export function getFrequencyForTone (n) {
@@ -79,7 +73,7 @@ export function getFrequencyForTone (n) {
 export function repeatNotes (note, length, repeat) {
   const result = []
   for (let i = 0; i < repeat; i++) {
-    result.push([length * i, note])
+    result.push([length * i, note, length])
   }
   return result
 }
@@ -111,15 +105,6 @@ export function setNoteLengths(notes, totalBeatCount) {
   return notes
 }
 
-export async function createBuffer (trackFunction, sampleCount) {
-  const buffer = TheAudioContext.createBuffer(1, sampleCount, contextSampleRate)
-  trackFunction(buffer.getChannelData(0))
-
-  await waitForNextFrame()
-
-  return buffer
-}
-
 export function applyRepeatingEnvelope (buffer, envelope, bpm) {
   const sampler = new EnvelopeSampler(envelope)
   let prevT = 0
@@ -134,5 +119,3 @@ export function applyRepeatingEnvelope (buffer, envelope, bpm) {
 
   return buffer
 }
-
-

@@ -1,8 +1,8 @@
 import { TheAudioContext, TheAudioDestination, TheReverbDestination } from './Audio/Context'
 
-export async function playSample (sample, volume = 1, toReverb = false) {
+export function playSample (sample, volume = 1, toReverb = false) {
   let source = TheAudioContext.createBufferSource()
-  source.buffer = await sample
+  source.buffer = sample
 
   let toConnect = source
 

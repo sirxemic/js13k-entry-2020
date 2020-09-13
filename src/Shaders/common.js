@@ -24,12 +24,6 @@ float noise(vec3 p){
   return o4.y * d.y + o4.x * (1.0 - d.y);
 }
 
-vec2 rotate(vec2 uv, float a) {
-  float c = cos(a);
-  float s = sin(a);
-  return vec2(c * uv.x - s * uv.y, s * uv.x + c * uv.y);
-}
-
 float fbm(vec2 p, float t) {
   float f;
   f  = 0.55 * noise(vec3(p, t)); p *= 2.1;

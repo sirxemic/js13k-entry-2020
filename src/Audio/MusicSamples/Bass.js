@@ -3,7 +3,7 @@ import {
   applyEnvelope,
   getFrequencyDelta,
   sampleSquare,
-  lowPassFilter
+  lowPassFilter, sampleSine
 } from '../SoundGeneration'
 import { EnvelopeSampler } from '../../utils'
 
@@ -28,7 +28,7 @@ export function createBassSound (frequency, length) {
 
   function getSample (t) {
     p += getFrequencyDelta(frequency * 2 ** pitchSampler.sample(t))
-    return sampleSquare(p)
+    return sampleSquare(p) + sampleSine(p)
   }
 
   const freqEnvelope = [

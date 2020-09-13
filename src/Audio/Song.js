@@ -1,7 +1,7 @@
 import { TheAudioContext, TheAudioDestination, TheReverbDestination } from './Context'
 
 export class Song {
-  constructor (channelConfigs, loop = null) {
+  constructor (channelConfigs) {
     this.channelConfigs = channelConfigs
 
     let master = TheAudioContext.createGain()
@@ -25,8 +25,6 @@ export class Song {
         volumeParam: gainNode.gain
       }
     })
-
-    this.loop = loop
 
     master.connect(TheAudioDestination)
   }
@@ -60,16 +58,13 @@ export class Song {
       }
 
       const sourceNode = TheAudioContext.createBufferSource()
-      if (this.loop) {
-        sourceNode.loop = true
-        sourceNode.loopStart = this.loop.start
-        sourceNode.loopEnd = channel.buffer.duration
-      }
+      sourceNode.loop = true
+      sourceNode.loopEnd = channel.buffer.duration
       sourceNode.buffer = channel.buffer
       sourceNode.connect(channel.sourceTarget)
       sourceNode.start()
       channel.source = sourceNode
-      channel.volumeParam.setValueAtTime(1, TheAudioContext.currentTime)
+      channel.volumeParam.value = channel.volume
     })
   }
 }

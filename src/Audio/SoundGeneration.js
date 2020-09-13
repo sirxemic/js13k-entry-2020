@@ -243,17 +243,14 @@ export function getFrequencyDelta (freq) {
   return freq / contextSampleRate
 }
 
-export async function createAudioBuffer (dataFunction) {
-  let array = dataFunction()
+export function createAudioBuffer (array) {
   if (!Array.isArray(array)) {
-    array = [ array ]
+    array = [array]
   }
   const result = TheAudioContext.createBuffer(array.length, array[0].length, contextSampleRate)
   for (let i = 0; i < array.length; i++) {
     result.getChannelData(i).set(array[i])
   }
-
-  await waitForNextFrame()
 
   return result
 }

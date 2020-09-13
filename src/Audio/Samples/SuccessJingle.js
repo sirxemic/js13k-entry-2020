@@ -7,8 +7,7 @@ import {
   sampleSine,
   sampleSawtooth
 } from '../SoundGeneration'
-import { addNotes } from '../SongGeneration'
-import { contextSampleRate } from '../Context'
+import { addNotes, createTempBuffer } from '../SongGeneration'
 
 function createSuccessSound (frequency, length) {
   const volumeEnvelope = [
@@ -31,8 +30,6 @@ export function createSuccessJingle () {
   const bpm = 900
   const measureCount = 2
   const trackBeatCount = measureCount * 4
-  const trackDuration = trackBeatCount * 60 / bpm
-  const sampleCount = Math.ceil(trackDuration * contextSampleRate)
   const notes = [
     [0, 0],
     [1, 5],
@@ -42,7 +39,7 @@ export function createSuccessJingle () {
     [5, 19],
   ]
 
-  const output = new Float32Array(sampleCount)
+  const output = createTempBuffer(trackBeatCount, bpm)
   addNotes(notes, output, createSuccessSound, bpm)
 
   return output
@@ -52,8 +49,6 @@ export function createWinJingle () {
   const bpm = 900
   const measureCount = 8
   const trackBeatCount = measureCount * 4
-  const trackDuration = trackBeatCount * 60 / bpm
-  const sampleCount = Math.ceil(trackDuration * contextSampleRate)
   const notes = [
     [0, 0],
     [1, 5],
@@ -73,7 +68,7 @@ export function createWinJingle () {
     [16, -24, 2],
   ]
 
-  const output = new Float32Array(sampleCount)
+  const output = createTempBuffer(trackBeatCount, bpm)
   addNotes(notes, output, createSuccessSound, bpm)
 
   return output
