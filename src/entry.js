@@ -44,6 +44,7 @@ const STATE_SOLVE_TRANSITION = 3
 const STATE_FAIL_TRANSITION = 4
 const STATE_FINISH = 5
 const STATE_GAMEOVER = 6
+const STATE_START_SCREEN_TRANSITION = 8
 
 function onTransitionEnd () {
   currentPuzzle.trackPosition = 0
@@ -78,7 +79,6 @@ const gameFSM = new FSM({
       showStart(async () => {
         await TheAudioContext.resume()
         MainSong.play()
-        currentPuzzle.isActive = false
         let newLevelIndex
         if (casualMode) {
           newLevelIndex = loadProgress() || (showTutorial ? 0 : tutorialCount)
@@ -86,15 +86,30 @@ const gameFSM = new FSM({
         } else {
           newLevelIndex = showTutorial ? 0 : tutorialCount
         }
-        setLevelIndex(newLevelIndex)
-        currentPuzzle = new Puzzle(levels[newLevelIndex])
-        nextPuzzle = new Puzzle(levels[newLevelIndex + 1])
-        gameFSM.setState(STATE_PLAYING)
+        setLevelIndex(newLevelIndex - 1)
+        nextPuzzle = new Puzzle(levels[newLevelIndex])
+        gameFSM.setState(STATE_START_SCREEN_TRANSITION)
       })
     },
 
     execute () {
       currentPuzzle.trackPosition -= currentPuzzle.trackPosition * (1 - Math.exp(-10 * delta))
+    }
+  },
+
+  [STATE_START_SCREEN_TRANSITION]: {
+    enter () {
+      currentPuzzle.setDone()
+      currentPuzzle.isActive = false
+      transitionTime = 0
+    },
+
+    execute () {
+      transitionTime += delta * 0.75
+      nextPuzzle.trackPosition -= nextPuzzle.trackPosition * (1 - Math.exp(-8 * delta))
+      if (transitionTime > 1) {
+        onTransitionEnd()
+      }
     }
   },
 
