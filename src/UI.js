@@ -107,8 +107,11 @@ export function showStart (callback) {
   startButton.onclick = callback
 }
 
-export function showFinalScore () {
+export function showFinalScore (finish) {
   setScreen(finalScoreScreen)
+  if (finish) {
+    getElement(classNames.endText).textContent = 'THE END'
+  }
   finalScoreScreen.appendChild(scoreDisplay)
 }
 

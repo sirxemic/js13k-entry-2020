@@ -82,6 +82,7 @@ const gameFSM = new FSM({
         let newLevelIndex
         if (casualMode) {
           newLevelIndex = loadProgress() || (showTutorial ? 0 : tutorialCount)
+          if (newLevelIndex >= levels.length) newLevelIndex = 0
         } else {
           newLevelIndex = showTutorial ? 0 : tutorialCount
         }
@@ -177,7 +178,7 @@ const gameFSM = new FSM({
         saveProgress(0)
         showEndCard()
       } else {
-        showFinalScore()
+        showFinalScore(true)
       }
       playSample(WinJingle, 1, true)
     }

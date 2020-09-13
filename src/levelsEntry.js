@@ -1,11 +1,11 @@
-import { FourShape, CircleShape } from './Geometries/Shapes'
+import { FourShape, CircleShape, TriangleShape, UShape } from './Geometries/Shapes'
 import { tutorialLevels } from './Levels/tutorials'
 import { mainLevels } from './Levels/main'
-import { O1 } from './Levels/levelUtils'
+import { O1, H1 } from './Levels/levelUtils'
 
 const bookend = {
-  shapes: [FourShape, CircleShape, FourShape],
-  orientations: [O1, O1, O1],
+  shapes: [TriangleShape, UShape, FourShape, CircleShape, FourShape, UShape, TriangleShape],
+  orientations: [O1, O1, O1, O1, H1, H1, H1],
   actions: []
 }
 

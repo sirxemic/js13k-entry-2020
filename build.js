@@ -160,6 +160,9 @@ function createHtml () {
     minifiedHtml = minifiedHtml.replace(new RegExp(`\\b${key}\\b`, 'g'), value)
   })
 
+  // Hack: undo some renaming :P
+  minifiedHtml = minifiedHtml.replace('your s ', 'your screen ')
+
   return minifiedHtml
 }
 

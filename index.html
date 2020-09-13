@@ -71,6 +71,10 @@ canvas {
   pointer-events: none;
 }
 
+.endText {
+  margin: -0.3em 0 0.25em;
+}
+
 .screen {
   display: none;
   opacity: 0;
@@ -163,10 +167,11 @@ canvas {
   </div>
 
   <div class="screen finalScoreScreen">
-    <div style="margin:-2em 0 1em">GAME OVER</div><span class="metricLabel">FINAL SCORE</span>
+    <div class="endText">GAME OVER</div>
+    <span class="metricLabel">FINAL SCORE</span>
   </div>
 
-  <div class="screen casualEndScreen">YOU BEAT ALL LEVELS!<br>CONGRATS!</div>
+  <div class="screen casualEndScreen">YOU SOLVED ALL PUZZLES!<br>CONGRATS!</div>
 
   <div class="screen mainMenu">
     <div class="clickable startButton">START</div>

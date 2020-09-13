@@ -17,6 +17,7 @@ export const classNames = {
   stateCasualMode: 'p',
   glyph: 'q',
   stateTutorial: 'r',
+  endText: 'z',
 
   // Classes which are not used in JS:
   screen: 's',
