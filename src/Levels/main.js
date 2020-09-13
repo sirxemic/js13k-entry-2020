@@ -153,19 +153,6 @@ export const mainLevels = [
 
   // Level 12
   {
-    shapes: [CircleShape, UShape, TriangleShape, UShape, TriangleShape],
-    orientations: [O1, O1, [0, -1, 1, 0], H1, [0, -1, -1, 0]],
-    actions: [
-      [RotateCWAction, 2],
-      [ShiftAction, -3],
-      [SwapAction, -1, 0],
-    ],
-    maxMoves: 4,
-    timeLimit: 30
-  },
-
-  // Level 13
-  {
     shapes: [FourShape, FourShape, TriangleShape, CircleShape, TriangleShape],
     orientations: [O1, H1, O1, O1, H1],
     actions: [
@@ -174,6 +161,19 @@ export const mainLevels = [
       [SwapAction, -2, -1, 1]
     ],
     maxMoves: 3,
+    timeLimit: 30
+  },
+
+  // Level 13
+  {
+    shapes: [TriangleShape, TriangleShape, TriangleShape, CircleShape, TriangleShape],
+    orientations: [V1, V1, [0,-1,1,0], O1, [0,-1,1,0]],
+    actions: [
+      [ShiftAction, -3],
+      [FlipHAction, -2],
+      [ShiftAction, 3],
+    ],
+    maxMoves: 5,
     timeLimit: 30
   },
 
@@ -187,23 +187,10 @@ export const mainLevels = [
       [SwapAction, -1, 2, 1],
     ],
     maxMoves: 5,
-    timeLimit: 30
+    timeLimit: 45
   },
 
   // Level 15
-  {
-    shapes: [TriangleShape, TriangleShape, TriangleShape, CircleShape, TriangleShape],
-    orientations: [V1, V1, [0,-1,1,0], O1, [0,-1,1,0]],
-    actions: [
-      [ShiftAction, -3],
-      [FlipHAction, -2],
-      [ShiftAction, 3],
-    ],
-    maxMoves: 5,
-    timeLimit: 30
-  },
-
-  // Level 16
   {
     shapes: [UShape, UShape, FourShape, FourShape, CircleShape],
     orientations: [O1, [0,-1,-1,0], [0,1,-1,0], [0,1,1,0], O1],
@@ -213,10 +200,10 @@ export const mainLevels = [
       [SwapAction, -2, 1],
     ],
     maxMoves: 5,
-    timeLimit: 30
+    timeLimit: 45
   },
 
-  // Level 17
+  // Level 16
   {
     shapes: [FourShape, CircleShape, FourShape, FourShape, FourShape],
     orientations: [[0,-1,-1,0], O1, V1, H1, [0,1,1,0]],
@@ -226,10 +213,10 @@ export const mainLevels = [
       [ShiftAction, 3],
     ],
     maxMoves: 5,
-    timeLimit: 30
+    timeLimit: 45
   },
 
-  // Level 18
+  // Level 17
   {
     shapes: [FourShape, CircleShape, TriangleShape, TriangleShape, FourShape],
     orientations: [O1, O1, [0, 1, -1, 0], H1, H1],
@@ -243,7 +230,7 @@ export const mainLevels = [
     timeLimit: 45
   },
 
-  // Level 19
+  // Level 18
   {
     shapes: [CircleShape, FourShape, UShape, UShape, FourShape],
     orientations: [O1, V1, [0, -1, 1, 0], [0, -1, -1, 0], [0, 1, -1, 0]],
@@ -257,7 +244,7 @@ export const mainLevels = [
     timeLimit: 45
   },
 
-  // Level 20
+  // Level 19
   {
     shapes: [UShape, FourShape, UShape, FourShape, CircleShape],
     orientations: [H1, [-1,0,0,-1], O1, O1, O1],
@@ -269,10 +256,10 @@ export const mainLevels = [
       [RotateCCWAction, 0],
     ],
     maxMoves: 6,
-    timeLimit: 30
+    timeLimit: 45
   },
 
-  // Level 21
+  // Level 20
   {
     shapes: [FourShape, FourShape, UShape, UShape, CircleShape],
     orientations: [[0,1,1,0], [0,1,1,0], [0,-1,-1,0], [0,-1,1,0], O1],
@@ -286,7 +273,7 @@ export const mainLevels = [
     timeLimit: 45
   },
 
-  // Level 22
+  // Level 21
   {
     shapes: [FourShape, FourShape, FourShape, FourShape, FourShape, FourShape, CircleShape],
     orientations: [O1, V1, H1, [0, 1, 1, 0], [0, 1, -1, 0], [0, -1, -1, 0], O1],
@@ -302,7 +289,7 @@ export const mainLevels = [
     timeLimit: 60
   },
 
-  // Level 23
+  // Level 22
   {
     shapes: [UShape, FourShape, FourShape, UShape, CircleShape, UShape, UShape],
     orientations: [[0,1,-1,0], [0,1,-1,0], H1, [0,1,1,0], O1, [0,-1,-1,0], [0,-1,1,0]],
@@ -317,7 +304,7 @@ export const mainLevels = [
     timeLimit: 60
   },
 
-  // Level 24
+  // Level 23
   {
     shapes: [CircleShape, FourShape, TriangleShape, TriangleShape, TriangleShape, FourShape, TriangleShape],
     orientations: [O1, [-1,0,0,-1], [0,-1,-1,0], [0,-1,-1,0], [0,1,-1,0], [0,-1,-1,0], [0,-1,1,0]],
